@@ -10,7 +10,7 @@ import Foundation
 enum APIError: Error {
     case error(String)
     case errorURL
-    
+
     var localizedDescription: String {
         switch self {
         case .error(let string):
@@ -27,14 +27,14 @@ final class Networking {
         let networking = Networking()
         return networking
     }()
-    
+
     class func shared() -> Networking {
         return sharedNetworking
     }
-    
+
     //MARK: - init
     private init() {}
-    
+
     //MARK: - request
     func request(with urlString: String, completion: @escaping (Data?, APIError?) -> Void) {
             guard let url = URL(string: urlString) else {
@@ -42,10 +42,10 @@ final class Networking {
                 completion(nil, error)
                 return
             }
-            
+
             let config = URLSessionConfiguration.ephemeral
             config.waitsForConnectivity = true
-            
+
             let session = URLSession(configuration: config)
             let task = session.dataTask(with: url) { (data, response, error) in
                 DispatchQueue.main.async {
