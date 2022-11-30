@@ -36,26 +36,26 @@ final class Networking {
     private init() {}
 
     //MARK: - request
-    func request(with urlString: String, completion: @escaping (Data?, APIError?) -> Void) {
+    func request(with urlString: String, completion: @escaping (Result<Data,APIError>) -> Void) {
             guard let url = URL(string: urlString) else {
                 let error = APIError.error("URL Error")
-                completion(nil, error)
+                completion(.failure(error))
                 return
             }
 
-            let config = URLSessionConfiguration.ephemeral
+            let config = URLSessionConfiguration.default
             config.waitsForConnectivity = true
 
             let session = URLSession(configuration: config)
             let task = session.dataTask(with: url) { (data, response, error) in
                 DispatchQueue.main.async {
                     if let error = error {
-                        completion(nil, APIError.error(error.localizedDescription))
+                        completion(.failure(APIError.error(error.localizedDescription)))
                     } else {
                         if let data = data {
-                            completion(data, nil)
+                            completion(.success(data))
                         } else {
-                           completion(nil, APIError.error("Data format is error."))
+                            completion(.failure(APIError.error("Data format is error.")))
                         }
                     }
                 }

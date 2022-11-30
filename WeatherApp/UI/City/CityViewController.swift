@@ -17,11 +17,27 @@ class CityViewController: UIViewController {
 
     //MARK: - Properties
     var cityName: String?
+    private var viewModel = CityViewModel()
 
     //MARK: - ViewLifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = cityName
+        viewModel.delegate = self
+        viewModel.fetchWeather(at: cityName ?? "")
         // Do any additional setup after loading the view.
+    }
+}
+
+//MARK: - CityViewModelDelegate
+extension CityViewController: CityViewModelDelegate {
+    func didUpdateWeatherCondition(_ model: CityViewModel, weatherModel: Weather) {
+        temperatureLabel.text = weatherModel.tempCString
+        humidityLabel.text = weatherModel.formatedHumiditySring
+        currentWeatherLabel.text = weatherModel.descriptionString
+        weatherImg.LoadFromUrl(url: weatherModel.weatherIconUrlString)
+    }
+
+    func didFailWithError(_ model: CityViewModel, error: APIError) {
     }
 }

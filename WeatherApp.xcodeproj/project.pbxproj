@@ -19,6 +19,10 @@
 		344C012C2935C79B001D7917 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344C012B2935C79B001D7917 /* Networking.swift */; };
 		344C01312935DEA1001D7917 /* CityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344C012F2935DEA1001D7917 /* CityViewController.swift */; };
 		344C01322935DEA1001D7917 /* CityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 344C01302935DEA1001D7917 /* CityViewController.xib */; };
+		344C013429360FD7001D7917 /* BaseResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344C013329360FD7001D7917 /* BaseResponse.swift */; };
+		344C013629361013001D7917 /* Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344C013529361013001D7917 /* Weather.swift */; };
+		344C013829361130001D7917 /* CityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344C013729361130001D7917 /* CityViewModel.swift */; };
+		34A8E1192936F3D1001E25BD /* UIImageView+LoadFromUrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A8E1182936F3D1001E25BD /* UIImageView+LoadFromUrl.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +59,10 @@
 		344C012B2935C79B001D7917 /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
 		344C012F2935DEA1001D7917 /* CityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityViewController.swift; sourceTree = "<group>"; };
 		344C01302935DEA1001D7917 /* CityViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CityViewController.xib; sourceTree = "<group>"; };
+		344C013329360FD7001D7917 /* BaseResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseResponse.swift; sourceTree = "<group>"; };
+		344C013529361013001D7917 /* Weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weather.swift; sourceTree = "<group>"; };
+		344C013729361130001D7917 /* CityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityViewModel.swift; sourceTree = "<group>"; };
+		34A8E1182936F3D1001E25BD /* UIImageView+LoadFromUrl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+LoadFromUrl.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +154,8 @@
 		344C01272935C28A001D7917 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				344C013329360FD7001D7917 /* BaseResponse.swift */,
+				344C013529361013001D7917 /* Weather.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -153,6 +163,7 @@
 		344C01282935C295001D7917 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				34A8E1182936F3D1001E25BD /* UIImageView+LoadFromUrl.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -186,6 +197,7 @@
 		344C012E2935DE80001D7917 /* City */ = {
 			isa = PBXGroup;
 			children = (
+				344C013729361130001D7917 /* CityViewModel.swift */,
 				344C012F2935DEA1001D7917 /* CityViewController.swift */,
 				344C01302935DEA1001D7917 /* CityViewController.xib */,
 			);
@@ -327,8 +339,12 @@
 				344C00FB2935B4B6001D7917 /* ViewController.swift in Sources */,
 				344C01312935DEA1001D7917 /* CityViewController.swift in Sources */,
 				344C00F72935B4B6001D7917 /* AppDelegate.swift in Sources */,
+				344C013829361130001D7917 /* CityViewModel.swift in Sources */,
+				344C013429360FD7001D7917 /* BaseResponse.swift in Sources */,
 				344C00F92935B4B6001D7917 /* SceneDelegate.swift in Sources */,
+				34A8E1192936F3D1001E25BD /* UIImageView+LoadFromUrl.swift in Sources */,
 				344C012C2935C79B001D7917 /* Networking.swift in Sources */,
+				344C013629361013001D7917 /* Weather.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
