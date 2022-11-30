@@ -22,7 +22,7 @@ struct CityViewModel {
     }
 
     private func getWeatherDetail(url: String) {
-        Networking.shared().request(with: url) { result in
+        Network.shared().request(with: url) { result in
             switch result {
             case .success(let data):
                 parseJson(with: data)

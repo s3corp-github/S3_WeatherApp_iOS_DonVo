@@ -14,16 +14,19 @@ class ViewController: UIViewController {
     @IBOutlet weak var tableViewContrainBottom: NSLayoutConstraint!
 
     //MARK: - Properties
-    var filteredCity : [String] = []
-    var recentSearchCity : [String] = ["Canada", "Chicago", "Canada", "Chicago", "Canada", "Chicago", "Canada", "Chicago", "Canada", "Chicago", "Canada", "Chicago", "Canada", "Chicago", "Canada", "Chicago"]
-    let cellIdentifier = "Cell"
-    let searchController = UISearchController(searchResultsController: nil)
+    private var filteredCity : [String] = []
+    private var recentSearchCity : [String] = []
+    private let cellIdentifier = "Cell"
+    private let searchController = UISearchController(searchResultsController: nil)
+    private var viewModel = SearchViewModel()
+    private var debounceTimer: Timer?
 
     //MARK: - ViewLifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
+        viewModel.delegate = self
         searchController.searchResultsUpdater = self
         self.searchController.hidesNavigationBarDuringPresentation = false;
         self.searchController.searchBar.searchBarStyle = .minimal
@@ -43,12 +46,19 @@ class ViewController: UIViewController {
         }
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        recentSearchCity = viewModel.getRecentCity()
+        tableView.reloadData()
+    }
+
     //MARK: - Methods
     private func filterCity(for searchText: String) {
         filteredCity = recentSearchCity.filter { city in
             return city.lowercased().contains(searchText.lowercased())
         }
-        tableView.reloadData()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
 
     private func handleKeyboard(notification: Notification) {
@@ -71,6 +81,35 @@ class ViewController: UIViewController {
         self.view.layoutIfNeeded()
       })
     }
+
+    private func updateRecentCity(recent: String) {
+        viewModel.updateRecentCity(recent: recent, recentList: recentSearchCity )
+        recentSearchCity = viewModel.getRecentCity()
+
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+
+    private func setEmptyMessage(message: String) {
+        let rect = CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(
+            width: self.view.bounds.size.width,
+            height: self.view.bounds.size.height))
+        let messageLabel = UILabel(frame: rect)
+        messageLabel.text = message
+        messageLabel.textColor = UIColor.black
+        messageLabel.numberOfLines = 0;
+        messageLabel.textAlignment = .center;
+        messageLabel.sizeToFit()
+
+        tableView.backgroundView = messageLabel;
+        tableView.separatorStyle = .none;
+    }
+
+    private func restoreTableView() {
+        tableView.backgroundView = nil
+        tableView.separatorStyle = .singleLine
+    }
 }
 
 //MARK: - UITableViewDelegate
@@ -84,6 +123,7 @@ extension ViewController: UITableViewDelegate {
         }
         let cityVc = CityViewController()
         cityVc.cityName = cityName
+        updateRecentCity(recent: cityName)
         navigationController?.pushViewController(cityVc, animated: true)
     }
 }
@@ -92,9 +132,21 @@ extension ViewController: UITableViewDelegate {
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if searchController.isActive && searchController.searchBar.text != "" {
+            if filteredCity.count > 0 {
+                restoreTableView()
+            } else {
+                setEmptyMessage(message: "Couldn't find any suitable place.")
+            }
             return filteredCity.count
           }
-          return recentSearchCity.count
+
+        if recentSearchCity.count > 0 {
+            restoreTableView()
+        } else {
+            setEmptyMessage(message: "You don't have any search history yet!")
+        }
+        return recentSearchCity.count
+
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -113,6 +165,34 @@ extension ViewController: UITableViewDataSource {
 //MARK: - UISearchResultsUpdating
 extension ViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        filterCity(for: searchController.searchBar.text ?? "")
-   }
+        if !searchController.isActive || searchController.searchBar.text == "" {
+            self.filteredCity.removeAll()
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+            debounceTimer?.invalidate()
+        } else {
+            debounceTimer?.invalidate()
+            debounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
+                self.viewModel.fetchCity(with: searchController.searchBar.text ?? "")
+            }
+        }
+    }
  }
+
+//MARK: - SearchViewModelDelegate
+extension ViewController: SearchViewModelDelegate {
+    func didUpdateCityList(_ model: SearchViewModel, cityList: CityList) {
+        self.filteredCity = cityList.cityList
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+
+    func didFailWithError(_ model: SearchViewModel, error: APIError) {
+        self.filteredCity.removeAll()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+}
