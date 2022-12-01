@@ -25,17 +25,18 @@ class CityViewController: UIViewController {
         navigationItem.title = cityName
         viewModel.delegate = self
         viewModel.fetchWeather(at: cityName ?? "")
-        // Do any additional setup after loading the view.
     }
 }
 
 //MARK: - CityViewModelDelegate
 extension CityViewController: CityViewModelDelegate {
     func didUpdateWeatherCondition(_ model: CityViewModel, weatherModel: Weather) {
-        temperatureLabel.text = weatherModel.tempCString
-        humidityLabel.text = weatherModel.formatedHumiditySring
-        currentWeatherLabel.text = weatherModel.descriptionString
-        weatherImg.LoadFromUrl(url: weatherModel.weatherIconUrlString)
+        DispatchQueue.main.async {
+            self.temperatureLabel.text = weatherModel.tempCString
+            self.humidityLabel.text = weatherModel.formatedHumiditySring
+            self.currentWeatherLabel.text = weatherModel.descriptionString
+            self.weatherImg.LoadFromUrl(url: weatherModel.weatherIconUrlString)
+        }
     }
 
     func didFailWithError(_ model: CityViewModel, error: APIError) {

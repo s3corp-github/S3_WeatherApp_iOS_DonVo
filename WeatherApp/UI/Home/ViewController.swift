@@ -14,12 +14,12 @@ class ViewController: UIViewController {
     @IBOutlet weak var tableViewContrainBottom: NSLayoutConstraint!
 
     //MARK: - Properties
-    private var filteredCity : [String] = []
-    private var recentSearchCity : [String] = []
     private let cellIdentifier = "Cell"
     private let searchController = UISearchController(searchResultsController: nil)
     private var viewModel = SearchViewModel()
     private var debounceTimer: Timer?
+    private var filteredCity : [String] = []
+    private var recentSearchCity : [String] = []
 
     //MARK: - ViewLifeCycle
     override func viewDidLoad() {
@@ -27,12 +27,26 @@ class ViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         viewModel.delegate = self
+
+        setUpUI()
+        setUpNotificationCenter()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        recentSearchCity = viewModel.getRecentCity()
+        tableView.reloadData()
+    }
+
+    //MARK: - Setup
+    private func setUpUI() {
         searchController.searchResultsUpdater = self
-        self.searchController.hidesNavigationBarDuringPresentation = false;
-        self.searchController.searchBar.searchBarStyle = .minimal
+        searchController.hidesNavigationBarDuringPresentation = false;
+        searchController.searchBar.searchBarStyle = .minimal
         self.navigationItem.titleView = self.searchController.searchBar;
         self.definesPresentationContext = true
+    }
 
+    private func setUpNotificationCenter() {
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(
           forName: UIResponder.keyboardWillChangeFrameNotification,
@@ -46,11 +60,6 @@ class ViewController: UIViewController {
         }
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        recentSearchCity = viewModel.getRecentCity()
-        tableView.reloadData()
-    }
-
     //MARK: - Methods
     private func filterCity(for searchText: String) {
         filteredCity = recentSearchCity.filter { city in
@@ -62,28 +71,26 @@ class ViewController: UIViewController {
     }
 
     private func handleKeyboard(notification: Notification) {
-      guard notification.name == UIResponder.keyboardWillChangeFrameNotification else {
-          tableViewContrainBottom.constant = 0
-        view.layoutIfNeeded()
-        return
-      }
+        guard notification.name == UIResponder.keyboardWillChangeFrameNotification else {
+            tableViewContrainBottom.constant = 0
+            view.layoutIfNeeded()
+            return
+        }
 
-      guard
-        let info = notification.userInfo,
-        let keyboardFrame = info[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue
-        else {
-          return
-      }
+        guard let info = notification.userInfo,
+              let keyboardFrame = info[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue
+        else { return }
 
-      let keyboardHeight = keyboardFrame.cgRectValue.size.height
-      UIView.animate(withDuration: 0.1, animations: { () -> Void in
-        self.tableViewContrainBottom.constant = keyboardHeight
-        self.view.layoutIfNeeded()
-      })
+        let keyboardHeight = keyboardFrame.cgRectValue.size.height
+        UIView.animate(withDuration: 0.1, animations: { () -> Void in
+            self.tableViewContrainBottom.constant = keyboardHeight
+            self.view.layoutIfNeeded()
+        })
     }
 
     private func updateRecentCity(recent: String) {
         viewModel.updateRecentCity(recent: recent, recentList: recentSearchCity )
+        recentSearchCity.removeAll()
         recentSearchCity = viewModel.getRecentCity()
 
         DispatchQueue.main.async {
@@ -146,7 +153,6 @@ extension ViewController: UITableViewDataSource {
             setEmptyMessage(message: "You don't have any search history yet!")
         }
         return recentSearchCity.count
-
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -183,6 +189,7 @@ extension ViewController: UISearchResultsUpdating {
 //MARK: - SearchViewModelDelegate
 extension ViewController: SearchViewModelDelegate {
     func didUpdateCityList(_ model: SearchViewModel, cityList: CityList) {
+        self.filteredCity.removeAll()
         self.filteredCity = cityList.cityList
         DispatchQueue.main.async {
             self.tableView.reloadData()

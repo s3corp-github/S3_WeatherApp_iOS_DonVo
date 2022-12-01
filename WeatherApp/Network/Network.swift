@@ -10,6 +10,8 @@ import Foundation
 enum APIError: Error {
     case error(String)
     case errorURL
+    case errorDataFormat
+    case errorDecodedData
 
     var localizedDescription: String {
         switch self {
@@ -17,6 +19,10 @@ enum APIError: Error {
             return string
         case .errorURL:
             return "URL String is error."
+        case .errorDataFormat:
+            return "Data format is error."
+        case .errorDecodedData:
+            return "Can not decode data."
         }
     }
 }
@@ -54,15 +60,50 @@ final class Network {
 
         let session = URLSession(configuration: config)
         let task = session.dataTask(with: url) { (data, response, error) in
-            DispatchQueue.main.async {
-                if let error = error {
-                    completion(.failure(APIError.error(error.localizedDescription)))
+            if let error = error {
+                completion(.failure(APIError.error(error.localizedDescription)))
+            } else {
+                if let data = data {
+                    completion(.success(data))
                 } else {
-                    if let data = data {
-                        completion(.success(data))
-                    } else {
-                        completion(.failure(APIError.error("Data format is error.")))
+                    completion(.failure(.errorDataFormat))
+                }
+            }
+        }
+        task.resume()
+    }
+
+    func request<T>(with urlString: String, completion: @escaping (Result<T,APIError>) -> Void) where T: Decodable {
+        guard let handleUrl = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+            let error = APIError.errorURL
+            completion(.failure(error))
+            return
+        }
+
+        guard let url = URL(string: handleUrl) else {
+            let error = APIError.errorURL
+            completion(.failure(error))
+            return
+        }
+
+        let config = URLSessionConfiguration.default
+        config.waitsForConnectivity = true
+
+        let session = URLSession(configuration: config)
+        let decoder = JSONDecoder()
+        let task = session.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                completion(.failure(APIError.error(error.localizedDescription)))
+            } else {
+                if let data = data {
+                    do {
+                        let decodeData = try decoder.decode(T.self, from: data)
+                        completion(.success(decodeData))
+                    } catch {
+                        completion(.failure(.errorDecodedData))
                     }
+                } else {
+                    completion(.failure(.errorDataFormat))
                 }
             }
         }

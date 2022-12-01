@@ -13,35 +13,24 @@ protocol SearchViewModelDelegate: AnyObject {
 }
 
 struct SearchViewModel {
-    private let baseUrl: String = "https://api.worldweatheronline.com/premium/v1/search.ashx?key=712fe930090e454885631934222911&format=json"
     private let userDefaults = UserDefaults.standard
     weak var delegate: SearchViewModelDelegate?
 
     func fetchCity(with cityPattern: String) {
-        let url = "\(baseUrl)&q=\(cityPattern)"
-        getCityList(url: url)
+        let service: SearchService = .searchCity(cityPattern)
+        getCityList(url: service.url)
     }
 
     private func getCityList(url: String) {
-        Network.shared().request(with: url) { result in
+        Network.shared().request(with: url) { (result: (Result<CityData,APIError>)) in
             switch result {
             case .success(let data):
-                parseJson(with: data)
+                let result = data.searchApi.result
+                let cityList = CityList(result: result)
+                delegate?.didUpdateCityList(self, cityList: cityList)
             case .failure(let error):
                 delegate?.didFailWithError(self, error: error)
             }
-        }
-    }
-
-    private func parseJson(with data: Data) {
-        let decoder = JSONDecoder()
-        do {
-            let decodeData = try decoder.decode(CityData.self, from: data)
-            let result = decodeData.searchApi.result
-            let cityList = CityList(result: result)
-            delegate?.didUpdateCityList(self, cityList: cityList)
-        } catch {
-            delegate?.didFailWithError(self, error: APIError.error("Can not decode data"))
         }
     }
 

@@ -13,9 +13,13 @@ extension UIImageView {
             Network.shared().request(with: url) { result in
                 switch result {
                 case .success(let data):
-                    self.image = UIImage(data: data)
+                    DispatchQueue.main.async {
+                        self.image = UIImage(data: data)
+                    }
                 case .failure(_):
-                    self.image = UIImage()
+                    DispatchQueue.main.async {
+                        self.image = UIImage()
+                    }
                 }
             }
         }
