@@ -28,12 +28,12 @@ extension BaseService {
 
     var url: String {
         var urlString = baseUrl + path
-        var flag = 0
+        var isFirstParam = true
         for (key, value) in params {
-            if flag == 0 {
+            if isFirstParam == true {
                 urlString.append("?")
                 urlString.append("\(key)=\(value)")
-                flag = 1
+                isFirstParam = false
             } else {
                 urlString.append("&")
                 urlString.append("\(key)=\(value)")

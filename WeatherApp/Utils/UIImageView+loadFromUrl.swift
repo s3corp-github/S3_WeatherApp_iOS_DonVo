@@ -8,7 +8,7 @@
 import UIKit
 
 extension UIImageView {
-    func LoadFromUrl(url: String) {
+    func loadFromUrl(url: String) {
         DispatchQueue.global().async {
             Network.shared().request(with: url) { result in
                 switch result {

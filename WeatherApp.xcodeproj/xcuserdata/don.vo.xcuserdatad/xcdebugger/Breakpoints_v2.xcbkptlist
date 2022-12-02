@@ -16,8 +16,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "124"
             endingLineNumber = "124"
-            landmarkName = "ViewController"
-            landmarkType = "21">
+            landmarkName = "tableView(_:didSelectRowAt:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -32,8 +32,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "33"
             endingLineNumber = "33"
-            landmarkName = "CityViewController"
-            landmarkType = "21">
+            landmarkName = "didUpdateWeatherCondition(_:weatherModel:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -94,8 +94,8 @@
             filePath = "WeatherApp/UI/Home/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "183"
-            endingLineNumber = "183"
+            startingLineNumber = "178"
+            endingLineNumber = "178"
             landmarkName = "updateSearchResults(for:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -110,10 +110,10 @@
             filePath = "WeatherApp/UI/Home/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "191"
-            endingLineNumber = "191"
-            landmarkName = "ViewController"
-            landmarkType = "21">
+            startingLineNumber = "193"
+            endingLineNumber = "193"
+            landmarkName = "didUpdateCityList(_:cityList:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -126,10 +126,10 @@
             filePath = "WeatherApp/UI/Home/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "199"
-            endingLineNumber = "199"
-            landmarkName = "ViewController"
-            landmarkType = "21">
+            startingLineNumber = "201"
+            endingLineNumber = "201"
+            landmarkName = "didFailWithError(_:error:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -144,15 +144,15 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "25"
             endingLineNumber = "25"
-            landmarkName = "getCityList(url:)"
+            landmarkName = "getCityList(with:pattern:)"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "8DEEDB89-642A-4690-9774-00B5B5661308 - 9236386f20138889"
+                  uuid = "8DEEDB89-642A-4690-9774-00B5B5661308 - 47dff4f54e9a0960"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "WeatherApp.SearchViewModel.getCityList(url: Swift.String) -&gt; ()"
+                  symbolName = "WeatherApp.SearchViewModel.getCityList(with: Swift.String, pattern: Swift.String) -&gt; ()"
                   moduleName = "WeatherApp"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/don.vo/Desktop/iOS/WeatherApp/WeatherApp/UI/Home/SearchViewModel.swift"
@@ -160,22 +160,22 @@
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "25"
                   endingLineNumber = "25"
-                  offsetFromSymbolStart = "56">
+                  offsetFromSymbolStart = "96">
                </Location>
                <Location
-                  uuid = "8DEEDB89-642A-4690-9774-00B5B5661308 - 1eb844fe13a59552"
+                  uuid = "8DEEDB89-642A-4690-9774-00B5B5661308 - 70bd5a43c14286a9"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Swift.Result&lt;WeatherApp.CityData, WeatherApp.APIError&gt;) -&gt; () in WeatherApp.SearchViewModel.getCityList(url: Swift.String) -&gt; ()"
+                  symbolName = "closure #1 (Swift.Result&lt;WeatherApp.CityData, WeatherApp.APIError&gt;) -&gt; () in WeatherApp.SearchViewModel.getCityList(with: Swift.String, pattern: Swift.String) -&gt; ()"
                   moduleName = "WeatherApp"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/don.vo/Desktop/iOS/WeatherApp/WeatherApp/UI/Home/SearchViewModel.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "27"
-                  endingLineNumber = "27"
-                  offsetFromSymbolStart = "116">
+                  startingLineNumber = "25"
+                  endingLineNumber = "25"
+                  offsetFromSymbolStart = "100">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -190,8 +190,8 @@
             filePath = "WeatherApp/UI/Home/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "174"
-            endingLineNumber = "174"
+            startingLineNumber = "169"
+            endingLineNumber = "169"
             landmarkName = "updateSearchResults(for:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -206,8 +206,8 @@
             filePath = "WeatherApp/Network/Network.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "76"
-            endingLineNumber = "76"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
             landmarkName = "request(with:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -222,10 +222,42 @@
             filePath = "WeatherApp/Network/Network.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "63"
-            endingLineNumber = "63"
+            startingLineNumber = "67"
+            endingLineNumber = "67"
             landmarkName = "request(with:completion:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "710B3F63-B9AB-4522-8544-174D36437AF4 - 507606420c681d1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 @Sendable (Swift.Optional&lt;Foundation.Data&gt;, Swift.Optional&lt;__C.NSURLResponse&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in WeatherApp.Network.request(with: Swift.String, completion: (Swift.Result&lt;Foundation.Data, WeatherApp.APIError&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "WeatherApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/don.vo/Desktop/iOS/WeatherApp/WeatherApp/Network/Network.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "67"
+                  endingLineNumber = "67"
+                  offsetFromSymbolStart = "132">
+               </Location>
+               <Location
+                  uuid = "710B3F63-B9AB-4522-8544-174D36437AF4 - 507606420c681d1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 @Sendable (Swift.Optional&lt;Foundation.Data&gt;, Swift.Optional&lt;__C.NSURLResponse&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in WeatherApp.Network.request(with: Swift.String, completion: (Swift.Result&lt;Foundation.Data, WeatherApp.APIError&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "WeatherApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/don.vo/Desktop/iOS/WeatherApp/WeatherApp/Network/Network.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "67"
+                  endingLineNumber = "67"
+                  offsetFromSymbolStart = "244">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -238,24 +270,8 @@
             filePath = "WeatherApp/Network/Network.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "95"
-            endingLineNumber = "95"
-            landmarkName = "request(with:completion:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "4ADC15FF-1BCE-412D-B5F4-D679BE40FC85"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "WeatherApp/Network/Network.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "100"
-            endingLineNumber = "100"
+            startingLineNumber = "97"
+            endingLineNumber = "97"
             landmarkName = "request(with:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -270,8 +286,8 @@
             filePath = "WeatherApp/Network/Network.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "83"
-            endingLineNumber = "83"
+            startingLineNumber = "86"
+            endingLineNumber = "86"
             landmarkName = "request(with:completion:)"
             landmarkType = "7">
             <Locations>
@@ -304,6 +320,86 @@
                   startingLineNumber = "79"
                   endingLineNumber = "79"
                   offsetFromSymbolStart = "744">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "1701CE32-FEAF-4B58-AFB6-A797F06A5ACB"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WeatherApp/Network/Network.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "118"
+            endingLineNumber = "118"
+            landmarkName = "request(with:completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "30F9FF79-5742-4007-BE1E-19BFF8D1542A"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WeatherApp/UI/City/CityViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "42"
+            endingLineNumber = "42"
+            landmarkName = "didFailWithError(_:error:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "80239A74-892D-4029-91CB-31EDF0EB8735"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WeatherApp/UI/City/CityViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "44"
+            endingLineNumber = "44"
+            landmarkName = "didFailWithError(_:error:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "80239A74-892D-4029-91CB-31EDF0EB8735 - ac809701d01ff4e3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 @Swift.MainActor () -&gt; () in WeatherApp.CityViewController.didFailWithError(_: WeatherApp.CityViewModel, error: WeatherApp.APIError) -&gt; ()"
+                  moduleName = "WeatherApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/don.vo/Desktop/iOS/WeatherApp/WeatherApp/UI/City/CityViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "44"
+                  endingLineNumber = "44"
+                  offsetFromSymbolStart = "84">
+               </Location>
+               <Location
+                  uuid = "80239A74-892D-4029-91CB-31EDF0EB8735 - 90da40c08ef1ffa8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in closure #1 @Swift.MainActor () -&gt; () in WeatherApp.CityViewController.didFailWithError(_: WeatherApp.CityViewModel, error: WeatherApp.APIError) -&gt; ()"
+                  moduleName = "WeatherApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/don.vo/Desktop/iOS/WeatherApp/WeatherApp/UI/City/CityViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "44"
+                  endingLineNumber = "44"
+                  offsetFromSymbolStart = "24">
                </Location>
             </Locations>
          </BreakpointContent>

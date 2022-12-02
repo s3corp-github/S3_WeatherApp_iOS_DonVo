@@ -18,15 +18,15 @@ struct SearchViewModel {
 
     func fetchCity(with cityPattern: String) {
         let service: SearchService = .searchCity(cityPattern)
-        getCityList(url: service.url)
+        getCityList(with: service.url, pattern: cityPattern)
     }
 
-    private func getCityList(url: String) {
+    private func getCityList(with url: String, pattern: String) {
         Network.shared().request(with: url) { (result: (Result<CityData,APIError>)) in
             switch result {
             case .success(let data):
                 let result = data.searchApi.result
-                let cityList = CityList(result: result)
+                let cityList = CityList(result: result, matchPattern: pattern)
                 delegate?.didUpdateCityList(self, cityList: cityList)
             case .failure(let error):
                 delegate?.didFailWithError(self, error: error)

@@ -9,6 +9,7 @@ import Foundation
 
 struct CityList: Decodable {
     let result: [Area]
+    let matchPattern: String
 
     var cityList: [String] {
         var list: [String] = []
@@ -17,6 +18,7 @@ struct CityList: Decodable {
             let cityName = area.value
             list.append(cityName)
         }
+        list = list.getElementMatching(pattern: matchPattern)
         return list
     }
 }

@@ -18,8 +18,8 @@ class ViewController: UIViewController {
     private let searchController = UISearchController(searchResultsController: nil)
     private var viewModel = SearchViewModel()
     private var debounceTimer: Timer?
-    private var filteredCity : [String] = []
-    private var recentSearchCity : [String] = []
+    private var filteredCity: [String] = []
+    private var recentSearchCity: [String] = []
 
     //MARK: - ViewLifeCycle
     override func viewDidLoad() {
@@ -42,6 +42,7 @@ class ViewController: UIViewController {
         searchController.searchResultsUpdater = self
         searchController.hidesNavigationBarDuringPresentation = false;
         searchController.searchBar.searchBarStyle = .minimal
+        searchController.searchBar.delegate = self
         self.navigationItem.titleView = self.searchController.searchBar;
         self.definesPresentationContext = true
     }
@@ -61,15 +62,6 @@ class ViewController: UIViewController {
     }
 
     //MARK: - Methods
-    private func filterCity(for searchText: String) {
-        filteredCity = recentSearchCity.filter { city in
-            return city.lowercased().contains(searchText.lowercased())
-        }
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-        }
-    }
-
     private func handleKeyboard(notification: Notification) {
         guard notification.name == UIResponder.keyboardWillChangeFrameNotification else {
             tableViewContrainBottom.constant = 0
@@ -88,8 +80,8 @@ class ViewController: UIViewController {
         })
     }
 
-    private func updateRecentCity(recent: String) {
-        viewModel.updateRecentCity(recent: recent, recentList: recentSearchCity )
+    private func updateRecentCity(with recent: String) {
+        viewModel.updateRecentCity(recent: recent, recentList: recentSearchCity)
         recentSearchCity.removeAll()
         recentSearchCity = viewModel.getRecentCity()
 
@@ -98,7 +90,7 @@ class ViewController: UIViewController {
         }
     }
 
-    private func setEmptyMessage(message: String) {
+    private func setEmptyMessage(with message: String) {
         let rect = CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(
             width: self.view.bounds.size.width,
             height: self.view.bounds.size.height))
@@ -117,6 +109,14 @@ class ViewController: UIViewController {
         tableView.backgroundView = nil
         tableView.separatorStyle = .singleLine
     }
+
+    //MARK: - Navigate
+    private func navigateToCityScreen(name: String) {
+        let cityVc = CityViewController()
+        cityVc.cityName = name
+        updateRecentCity(with: name)
+        navigationController?.pushViewController(cityVc, animated: true)
+    }
 }
 
 //MARK: - UITableViewDelegate
@@ -128,10 +128,7 @@ extension ViewController: UITableViewDelegate {
         } else {
             cityName = recentSearchCity[indexPath.row]
         }
-        let cityVc = CityViewController()
-        cityVc.cityName = cityName
-        updateRecentCity(recent: cityName)
-        navigationController?.pushViewController(cityVc, animated: true)
+        navigateToCityScreen(name: cityName)
     }
 }
 
@@ -141,8 +138,6 @@ extension ViewController: UITableViewDataSource {
         if searchController.isActive && searchController.searchBar.text != "" {
             if filteredCity.count > 0 {
                 restoreTableView()
-            } else {
-                setEmptyMessage(message: "Couldn't find any suitable place.")
             }
             return filteredCity.count
           }
@@ -150,7 +145,7 @@ extension ViewController: UITableViewDataSource {
         if recentSearchCity.count > 0 {
             restoreTableView()
         } else {
-            setEmptyMessage(message: "You don't have any search history yet!")
+            setEmptyMessage(with: "You don't have any search history yet!")
         }
         return recentSearchCity.count
     }
@@ -186,6 +181,13 @@ extension ViewController: UISearchResultsUpdating {
     }
  }
 
+//MARK: - UISearchBarDelegate
+extension ViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        navigateToCityScreen(name: searchController.searchBar.text ?? "")
+    }
+}
+
 //MARK: - SearchViewModelDelegate
 extension ViewController: SearchViewModelDelegate {
     func didUpdateCityList(_ model: SearchViewModel, cityList: CityList) {
@@ -199,6 +201,7 @@ extension ViewController: SearchViewModelDelegate {
     func didFailWithError(_ model: SearchViewModel, error: APIError) {
         self.filteredCity.removeAll()
         DispatchQueue.main.async {
+            self.setEmptyMessage(with: error.localizedDescription)
             self.tableView.reloadData()
         }
     }
