@@ -119,6 +119,7 @@ final class Network {
             case 200:
                 if errorMessage != "" {
                     completion(.failure(.error(errorMessage)))
+                    return
                 }
 
                 do {

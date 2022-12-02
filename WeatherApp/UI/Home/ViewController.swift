@@ -83,7 +83,6 @@ class ViewController: UIViewController {
     private func updateRecentCity(with recent: String) {
         viewModel.updateRecentCity(recent: recent, recentList: recentSearchCity)
         recentSearchCity.removeAll()
-        recentSearchCity = viewModel.getRecentCity()
 
         DispatchQueue.main.async {
             self.tableView.reloadData()
