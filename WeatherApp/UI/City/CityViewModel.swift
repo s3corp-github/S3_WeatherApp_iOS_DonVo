@@ -24,12 +24,20 @@ struct CityViewModel {
         Network.shared().request(with: url) { (result: (Result<BaseResponse<WeatherData>, APIError>)) in
             switch result {
             case .success(let decodedData):
-                guard let condition = decodedData.data.condition.first else { return }
+                guard let condition = decodedData.data.condition.first else {
+                    delegate?.didFailWithError(self, error: .errorDataNotExist)
+                    return
+                }
+                guard let area = decodedData.data.area.first else {
+                    delegate?.didFailWithError(self, error: .errorDataNotExist)
+                    return
+                }
                 let weather = Weather(
                     tempC: condition.tempC,
                     description: condition.description,
                     weatherIconUrl: condition.weatherIconUrl,
-                    humidity: condition.humidity)
+                    humidity: condition.humidity,
+                    name: area.city)
                 delegate?.didUpdateWeatherCondition(self, weatherModel: weather)
             case .failure(let error):
                 delegate?.didFailWithError(self, error: error)

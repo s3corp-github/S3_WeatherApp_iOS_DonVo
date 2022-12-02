@@ -12,43 +12,59 @@ final class CityViewModelTests: XCTestCase {
 
     private var cityVM: CityViewModel!
     private var weatherResult: Weather!
-    private var promise: XCTestExpectation!
+    private var error: APIError!
+    private var getDataPromise: XCTestExpectation!
+    private var errorPromise: XCTestExpectation!
 
     override func setUpWithError() throws {
         try! super.setUpWithError()
         cityVM = CityViewModel()
-        weatherResult = Weather(tempC: "", description: [], weatherIconUrl: [], humidity: "")
     }
 
     override func tearDownWithError() throws {
         cityVM = nil
+        getDataPromise = nil
+        errorPromise = nil
         try! super.tearDownWithError()
     }
 
     func testGetCityData() throws {
         //given
-        promise = expectation(description: "get weather data")
+        getDataPromise = expectation(description: "get weather data")
         cityVM.delegate = self
+        let city = "Ho Chi Minh"
 
         //when
-        cityVM.fetchWeather(at: "Ho Chi Minh City")
-        wait(for: [promise], timeout: 2)
+        cityVM.fetchWeather(at: city)
+        wait(for: [getDataPromise], timeout: 2)
 
         //then
-        XCTAssertNotEqual(self.weatherResult.weatherIconUrlString, "")
-        XCTAssertNotEqual(self.weatherResult.descriptionString, "")
-        XCTAssertNotEqual(self.weatherResult.tempCString, "")
-        XCTAssertNotEqual(self.weatherResult.humidity, "")
+        XCTAssertTrue(weatherResult.name.lowercased().contains(city.lowercased()))
+    }
+
+    func testGetCityDataWithWrongMatchingPattern() throws {
+        //given
+        errorPromise = expectation(description: "get error not matching")
+        cityVM.delegate = self
+        let city = "asdasd"
+
+        //when
+        cityVM.fetchWeather(at: city)
+        wait(for: [errorPromise], timeout: 2)
+
+        //then
+        XCTAssertEqual(error, .error("Unable to find any matching weather location to the query submitted!"))
     }
 }
 
 extension CityViewModelTests: CityViewModelDelegate {
     func didUpdateWeatherCondition(_ model: WeatherApp.CityViewModel, weatherModel: WeatherApp.Weather) {
         weatherResult = weatherModel
-        promise.fulfill()
+        getDataPromise.fulfill()
     }
 
     func didFailWithError(_ model: WeatherApp.CityViewModel, error: WeatherApp.APIError) {
-        XCTFail("Error: \(error.localizedDescription)")
+        self.error = error
+        errorPromise.fulfill()
     }
 }

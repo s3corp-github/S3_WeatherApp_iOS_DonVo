@@ -12,6 +12,15 @@ struct Weather {
     let description: [WeatherDesciption]
     let weatherIconUrl: [WeatherIcon]
     let humidity: String
+    let name: String
+
+    var nameString: String {
+        var result = name
+        if let index = name.firstIndex(of: ",") {
+            result = String(result[..<index])
+        }
+        return result
+    }
 
     var tempCString: String {
         return tempC
@@ -32,9 +41,19 @@ struct Weather {
 
 struct WeatherData: Decodable {
     let condition: [WeatherCondition]
+    let area: [WeatherArea]
 
     enum CodingKeys: String, CodingKey {
         case condition = "current_condition"
+        case area = "request"
+    }
+}
+
+struct WeatherArea: Decodable {
+    let city: String
+
+    enum CodingKeys: String, CodingKey {
+        case city = "query"
     }
 }
 

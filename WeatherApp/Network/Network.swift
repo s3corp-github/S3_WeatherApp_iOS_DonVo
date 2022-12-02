@@ -7,11 +7,11 @@
 
 import Foundation
 
-enum APIError: Error {
+enum APIError: Error, Equatable {
     case error(String)
     case errorRequestWithCode(Int, String)
     case errorURL
-    case errorDataNotExit
+    case errorDataNotExist
     case errorDecodedData
     case errorUnknown
 
@@ -23,7 +23,7 @@ enum APIError: Error {
             return "Error \(code): \(message)"
         case .errorURL:
             return "URL String is error."
-        case .errorDataNotExit:
+        case .errorDataNotExist:
             return "Data is not exist."
         case .errorDecodedData:
             return "Can not decode data."
@@ -70,7 +70,7 @@ final class Network {
                 if let data = data {
                     completion(.success(data))
                 } else {
-                    completion(.failure(.errorDataNotExit))
+                    completion(.failure(.errorDataNotExist))
                 }
             }
         }
@@ -105,7 +105,7 @@ final class Network {
             }
 
             guard let data = data else {
-                completion(.failure(.errorDataNotExit))
+                completion(.failure(.errorDataNotExist))
                 return
             }
 
