@@ -104,6 +104,26 @@ class ViewController: UIViewController {
         tableView.separatorStyle = .none;
     }
 
+    private func setLoadingIndicator() {
+        let rect = CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(
+            width: self.view.bounds.size.width,
+            height: self.view.bounds.size.height))
+        let view = UIView(frame: rect)
+
+        let indicator = UIActivityIndicatorView()
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.sizeToFit()
+        indicator.startAnimating()
+        view.addSubview(indicator)
+        NSLayoutConstraint.activate([
+            indicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            indicator.topAnchor.constraint(equalTo: view.topAnchor, constant: 10)
+        ])
+
+        tableView.backgroundView = view;
+        tableView.separatorStyle = .none;
+    }
+
     private func restoreTableView() {
         tableView.backgroundView = nil
         tableView.separatorStyle = .singleLine
@@ -165,14 +185,14 @@ extension ViewController: UITableViewDataSource {
 //MARK: - UISearchResultsUpdating
 extension ViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        if !searchController.isActive || searchController.searchBar.text == "" {
-            self.filteredCity.removeAll()
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-            debounceTimer?.invalidate()
-        } else {
-            debounceTimer?.invalidate()
+        self.filteredCity.removeAll()
+        DispatchQueue.main.async {
+            self.setLoadingIndicator()
+            self.tableView.reloadData()
+        }
+        debounceTimer?.invalidate()
+
+        if searchController.isActive && searchController.searchBar.text != "" {
             debounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
                 self.viewModel.fetchCity(with: searchController.searchBar.text ?? "")
             }
@@ -191,9 +211,16 @@ extension ViewController: UISearchBarDelegate {
 extension ViewController: SearchViewModelDelegate {
     func didUpdateCityList(_ model: SearchViewModel, cityList: CityList) {
         self.filteredCity.removeAll()
-        self.filteredCity = cityList.cityList
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
+        if cityList.cityList.count != 0 {
+            self.filteredCity = cityList.cityList
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.setEmptyMessage(with: "Unable to find any matching weather location to the query submitted!")
+                self.tableView.reloadData()
+            }
         }
     }
 
