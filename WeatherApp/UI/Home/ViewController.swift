@@ -82,11 +82,6 @@ class ViewController: UIViewController {
 
     private func updateRecentCity(with recent: String) {
         viewModel.updateRecentCity(recent: recent, recentList: recentSearchCity)
-        recentSearchCity.removeAll()
-
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-        }
     }
 
     private func setEmptyMessage(with message: String) {
@@ -142,7 +137,7 @@ class ViewController: UIViewController {
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         var cityName = ""
-        if searchController.isActive && searchController.searchBar.text != "" {
+        if searchController.isActive && searchController.searchBar.text?.handleWhiteSpace() != "" {
             cityName = filteredCity[indexPath.row]
         } else {
             cityName = recentSearchCity[indexPath.row]
@@ -154,7 +149,7 @@ extension ViewController: UITableViewDelegate {
 //MARK: - UITableViewDataSource
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if searchController.isActive && searchController.searchBar.text != "" {
+        if searchController.isActive && searchController.searchBar.text?.handleWhiteSpace() != "" {
             if filteredCity.count > 0 {
                 restoreTableView()
             }
@@ -172,7 +167,7 @@ extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
           let city: String
-          if searchController.isActive && searchController.searchBar.text != "" {
+        if searchController.isActive && searchController.searchBar.text?.handleWhiteSpace() != "" {
               city = filteredCity[indexPath.row]
           } else {
               city = recentSearchCity[indexPath.row]
@@ -185,6 +180,8 @@ extension ViewController: UITableViewDataSource {
 //MARK: - UISearchResultsUpdating
 extension ViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
+        guard let handleInput = searchController.searchBar.text?.handleWhiteSpace() else { return }
+
         self.filteredCity.removeAll()
         DispatchQueue.main.async {
             self.setLoadingIndicator()
@@ -192,9 +189,9 @@ extension ViewController: UISearchResultsUpdating {
         }
         debounceTimer?.invalidate()
 
-        if searchController.isActive && searchController.searchBar.text != "" {
+        if searchController.isActive && handleInput != "" {
             debounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
-                self.viewModel.fetchCity(with: searchController.searchBar.text ?? "")
+                self.viewModel.fetchCity(with: handleInput)
             }
         }
     }
@@ -203,7 +200,8 @@ extension ViewController: UISearchResultsUpdating {
 //MARK: - UISearchBarDelegate
 extension ViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        navigateToCityScreen(name: searchController.searchBar.text ?? "")
+        guard let handleInput = searchController.searchBar.text?.handleWhiteSpace() else { return }
+        navigateToCityScreen(name: handleInput)
     }
 }
 

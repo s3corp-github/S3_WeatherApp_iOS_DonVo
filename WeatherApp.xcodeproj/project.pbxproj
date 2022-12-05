@@ -32,6 +32,7 @@
 		34A8E11D29370AF3001E25BD /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A8E11C29370AF3001E25BD /* City.swift */; };
 		34A8E11F29375D87001E25BD /* BaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A8E11E29375D87001E25BD /* BaseService.swift */; };
 		34A8E12229375F08001E25BD /* SearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A8E12129375F08001E25BD /* SearchService.swift */; };
+		34AA88A0293DD25D00865A98 /* String+handleWhiteSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AA889F293DD25D00865A98 /* String+handleWhiteSpace.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +82,7 @@
 		34A8E11C29370AF3001E25BD /* City.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
 		34A8E11E29375D87001E25BD /* BaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseService.swift; sourceTree = "<group>"; };
 		34A8E12129375F08001E25BD /* SearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchService.swift; sourceTree = "<group>"; };
+		34AA889F293DD25D00865A98 /* String+handleWhiteSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+handleWhiteSpace.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,6 +189,7 @@
 				34A8E1182936F3D1001E25BD /* UIImageView+loadFromUrl.swift */,
 				34A6CF3C293994E800E6F5AD /* Array+getElementMatching.swift */,
 				34A6CF402939BB1800E6F5AD /* UIViewController+showAlert.swift */,
+				34AA889F293DD25D00865A98 /* String+handleWhiteSpace.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -380,6 +383,7 @@
 				34A52CED2938447700DD6890 /* WeatherService.swift in Sources */,
 				34A6CF3F2939AE2600E6F5AD /* ErrorResponse.swift in Sources */,
 				344C00F92935B4B6001D7917 /* SceneDelegate.swift in Sources */,
+				34AA88A0293DD25D00865A98 /* String+handleWhiteSpace.swift in Sources */,
 				34A6CF3D293994E800E6F5AD /* Array+getElementMatching.swift in Sources */,
 				34A8E11B29370660001E25BD /* SearchViewModel.swift in Sources */,
 				34A8E11D29370AF3001E25BD /* City.swift in Sources */,
