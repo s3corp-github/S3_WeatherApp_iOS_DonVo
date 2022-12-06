@@ -33,6 +33,7 @@
 		34A8E11F29375D87001E25BD /* BaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A8E11E29375D87001E25BD /* BaseService.swift */; };
 		34A8E12229375F08001E25BD /* SearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A8E12129375F08001E25BD /* SearchService.swift */; };
 		34AA88A0293DD25D00865A98 /* String+handleWhiteSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AA889F293DD25D00865A98 /* String+handleWhiteSpace.swift */; };
+		34C8417F293F3554009E732B /* NetworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C8417E293F3554009E732B /* NetworkTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +84,7 @@
 		34A8E11E29375D87001E25BD /* BaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseService.swift; sourceTree = "<group>"; };
 		34A8E12129375F08001E25BD /* SearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchService.swift; sourceTree = "<group>"; };
 		34AA889F293DD25D00865A98 /* String+handleWhiteSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+handleWhiteSpace.swift"; sourceTree = "<group>"; };
+		34C8417E293F3554009E732B /* NetworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,6 +152,7 @@
 			children = (
 				344C010D2935B4B6001D7917 /* CityViewModelTests.swift */,
 				34A6CF42293A007400E6F5AD /* SearchViewModelTest.swift */,
+				34C8417E293F3554009E732B /* NetworkTests.swift */,
 			);
 			path = WeatherAppTests;
 			sourceTree = "<group>";
@@ -399,6 +402,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34C8417F293F3554009E732B /* NetworkTests.swift in Sources */,
 				34A6CF43293A007400E6F5AD /* SearchViewModelTest.swift in Sources */,
 				344C010E2935B4B6001D7917 /* CityViewModelTests.swift in Sources */,
 			);

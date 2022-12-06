@@ -19,19 +19,21 @@ final class CityViewModelTests: XCTestCase {
     override func setUpWithError() throws {
         try! super.setUpWithError()
         cityVM = CityViewModel()
+        cityVM.delegate = self
     }
 
     override func tearDownWithError() throws {
         cityVM = nil
+        weatherResult = nil
+        error = nil
         getDataPromise = nil
         errorPromise = nil
         try! super.tearDownWithError()
     }
 
-    func testGetCityData() throws {
+    func testGetWeatherData() throws {
         //given
         getDataPromise = expectation(description: "get weather data")
-        cityVM.delegate = self
         let city = "Ho Chi Minh"
 
         //when
@@ -42,10 +44,9 @@ final class CityViewModelTests: XCTestCase {
         XCTAssertTrue(weatherResult.name.lowercased().contains(city.lowercased()))
     }
 
-    func testGetCityDataWithWrongMatchingPattern() throws {
+    func testGetWeatherDataWithWrongPattern() throws {
         //given
-        errorPromise = expectation(description: "get error not matching")
-        cityVM.delegate = self
+        errorPromise = expectation(description: "get error not found")
         let city = "asdasd"
 
         //when
