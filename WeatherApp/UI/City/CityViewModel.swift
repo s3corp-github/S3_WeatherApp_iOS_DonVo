@@ -7,13 +7,9 @@
 
 import Foundation
 
-protocol CityViewModelDelegate: AnyObject {
-    func didUpdateWeatherCondition(_ model: CityViewModel, weatherModel: Weather)
-    func didFailWithError(_ model: CityViewModel, error: APIError)
-}
-
 struct CityViewModel {
-    weak var delegate: CityViewModelDelegate?
+    var didGetWeather: ((Weather) -> Void)?
+    var didFailWithError: ((APIError) -> Void)?
 
     func fetchWeather(at city: String) {
         let service: WeatherService = .getWeather(city)
@@ -25,11 +21,11 @@ struct CityViewModel {
             switch result {
             case .success(let decodedData):
                 guard let condition = decodedData.data.condition.first else {
-                    delegate?.didFailWithError(self, error: .errorDataNotExist)
+                    didFailWithError?(.errorDataNotExist)
                     return
                 }
                 guard let area = decodedData.data.area.first else {
-                    delegate?.didFailWithError(self, error: .errorDataNotExist)
+                    didFailWithError?(.errorDataNotExist)
                     return
                 }
                 let weather = Weather(
@@ -38,9 +34,9 @@ struct CityViewModel {
                     weatherIconUrl: condition.weatherIconUrl,
                     humidity: condition.humidity,
                     name: area.city)
-                delegate?.didUpdateWeatherCondition(self, weatherModel: weather)
+                didGetWeather?(weather)
             case .failure(let error):
-                delegate?.didFailWithError(self, error: error)
+                didFailWithError?(error)
             }
         }
     }

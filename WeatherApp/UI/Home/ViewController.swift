@@ -26,10 +26,10 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
-        viewModel.delegate = self
 
         setUpUI()
         setUpNotificationCenter()
+        bind()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -58,6 +58,33 @@ class ViewController: UIViewController {
           forName: UIResponder.keyboardWillHideNotification,
           object: nil, queue: .main) { (notification) in
             self.handleKeyboard(notification: notification)
+        }
+    }
+
+    private func bind() {
+        viewModel.didGetCityList = { [weak self] list in
+            guard let self = self else { return }
+            self.filteredCity.removeAll()
+            if list.cityList.count != 0 {
+                self.filteredCity = list.cityList
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self.setEmptyMessage(with: "Unable to find any matching weather location to the query submitted!")
+                    self.tableView.reloadData()
+                }
+            }
+        }
+
+        viewModel.didFailWithError = { [weak self] error in
+            guard let self = self else { return }
+            self.filteredCity.removeAll()
+            DispatchQueue.main.async {
+                self.setEmptyMessage(with: error.localizedDescription)
+                self.tableView.reloadData()
+            }
         }
     }
 
@@ -202,31 +229,5 @@ extension ViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let handleInput = searchController.searchBar.text?.handleWhiteSpace() else { return }
         navigateToCityScreen(name: handleInput)
-    }
-}
-
-//MARK: - SearchViewModelDelegate
-extension ViewController: SearchViewModelDelegate {
-    func didUpdateCityList(_ model: SearchViewModel, cityList: CityList) {
-        self.filteredCity.removeAll()
-        if cityList.cityList.count != 0 {
-            self.filteredCity = cityList.cityList
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-        } else {
-            DispatchQueue.main.async {
-                self.setEmptyMessage(with: "Unable to find any matching weather location to the query submitted!")
-                self.tableView.reloadData()
-            }
-        }
-    }
-
-    func didFailWithError(_ model: SearchViewModel, error: APIError) {
-        self.filteredCity.removeAll()
-        DispatchQueue.main.async {
-            self.setEmptyMessage(with: error.localizedDescription)
-            self.tableView.reloadData()
-        }
     }
 }

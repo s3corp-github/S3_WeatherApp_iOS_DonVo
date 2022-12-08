@@ -11,7 +11,7 @@ import XCTest
 final class SearchViewModelTest: XCTestCase {
 
     private var searchVM: SearchViewModel!
-    private var searchResult: CityList!
+    private var list: [String]!
     private var error: APIError!
     private var getDataPromise: XCTestExpectation!
     private var errorPromise: XCTestExpectation!
@@ -19,12 +19,12 @@ final class SearchViewModelTest: XCTestCase {
     override func setUpWithError() throws {
         try! super.setUpWithError()
         searchVM = SearchViewModel()
-        searchVM.delegate = self
+        list = []
     }
 
     override func tearDownWithError() throws {
         searchVM = nil
-        searchResult = nil
+        list = nil
         error = nil
         getDataPromise = nil
         errorPromise = nil
@@ -38,11 +38,18 @@ final class SearchViewModelTest: XCTestCase {
         var wrongCount = 0
 
         //when
+        searchVM.didGetCityList = { [weak self] list in
+            self?.list = list.cityList
+            self?.getDataPromise.fulfill()
+        }
+        searchVM.didFailWithError = { _ in
+            XCTFail("Got an error")
+        }
         searchVM.fetchCity(with: pattern)
         wait(for: [getDataPromise], timeout: 2)
 
         //then
-        for val in searchResult.cityList {
+        for val in list {
             if !val.lowercased().contains(pattern.lowercased()) {
                 wrongCount += 1
             }
@@ -56,22 +63,41 @@ final class SearchViewModelTest: XCTestCase {
         let pattern = "asdasd"
 
         //when
+        searchVM.didGetCityList = { _ in
+            XCTFail("Expect to found an error but success instead")
+        }
+        searchVM.didFailWithError = { [weak self] error in
+            self?.error = error
+            self?.errorPromise.fulfill()
+        }
         searchVM.fetchCity(with: pattern)
         wait(for: [errorPromise], timeout: 2)
 
         //then
         XCTAssertEqual(error, .error("Unable to find any matching weather location to the query submitted!"))
     }
-}
 
-extension SearchViewModelTest: SearchViewModelDelegate {
-    func didUpdateCityList(_ model: WeatherApp.SearchViewModel, cityList: WeatherApp.CityList) {
-        searchResult = cityList
-        getDataPromise.fulfill()
+    func testGetCityListInUserDefault() throws {
+        //given
+        list = []
+
+        //when
+        searchVM.updateRecentCity(recent: "Ho Chi Minh", recentList: ["Singapore", "Canada"])
+        list = searchVM.getRecentCity()
+
+        //then
+        XCTAssertEqual(list, ["Ho Chi Minh" ,"Singapore", "Canada"])
     }
 
-    func didFailWithError(_ model: WeatherApp.SearchViewModel, error: WeatherApp.APIError) {
-        self.error = error
-        errorPromise.fulfill()
+    func testGetCityListInUserDefaultWithMoreThanTenItems() throws {
+        //given
+        list = []
+
+        //when
+        searchVM.updateRecentCity(recent: "Ho Chi Minh", recentList: ["Singapore", "Canada", "Paris", "Hanoi", "Bangkok", "New York", "Texas", "Tokyo", "Seoul", "Osaka"])
+        list = searchVM.getRecentCity()
+
+        //then
+        XCTAssertEqual(list, ["Ho Chi Minh" ,"Singapore", "Canada", "Paris", "Hanoi", "Bangkok", "New York", "Texas", "Tokyo", "Seoul"])
     }
 }
