@@ -7,14 +7,10 @@
 
 import Foundation
 
-protocol SearchViewModelDelegate: AnyObject {
-    func didUpdateCityList(_ model: SearchViewModel, cityList: CityList)
-    func didFailWithError(_ model: SearchViewModel, error: APIError)
-}
-
 struct SearchViewModel {
     private let userDefaults = UserDefaults.standard
-    weak var delegate: SearchViewModelDelegate?
+    var didGetCityList: ((CityList) -> Void)?
+    var didFailWithError: ((APIError) -> Void)?
 
     func fetchCity(with cityPattern: String) {
         let service: SearchService = .searchCity(cityPattern)
@@ -27,9 +23,9 @@ struct SearchViewModel {
             case .success(let data):
                 let result = data.searchApi.result
                 let cityList = CityList(result: result, matchPattern: pattern)
-                delegate?.didUpdateCityList(self, cityList: cityList)
+                didGetCityList?(cityList)
             case .failure(let error):
-                delegate?.didFailWithError(self, error: error)
+                didFailWithError?(error)
             }
         }
     }

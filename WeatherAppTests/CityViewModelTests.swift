@@ -19,7 +19,6 @@ final class CityViewModelTests: XCTestCase {
     override func setUpWithError() throws {
         try! super.setUpWithError()
         cityVM = CityViewModel()
-        cityVM.delegate = self
     }
 
     override func tearDownWithError() throws {
@@ -37,6 +36,13 @@ final class CityViewModelTests: XCTestCase {
         let city = "Ho Chi Minh"
 
         //when
+        cityVM.didGetWeather = { [weak self] weather in
+            self?.weatherResult = weather
+            self?.getDataPromise.fulfill()
+        }
+        cityVM.didFailWithError = { _ in
+            XCTFail("Got an error")
+        }
         cityVM.fetchWeather(at: city)
         wait(for: [getDataPromise], timeout: 2)
 
@@ -50,22 +56,17 @@ final class CityViewModelTests: XCTestCase {
         let city = "asdasd"
 
         //when
+        cityVM.didGetWeather = { _ in
+            XCTFail("Expect to found an error but success instead")
+        }
+        cityVM.didFailWithError = { [weak self] error in
+            self?.error = error
+            self?.errorPromise.fulfill()
+        }
         cityVM.fetchWeather(at: city)
         wait(for: [errorPromise], timeout: 2)
 
         //then
         XCTAssertEqual(error, .error("Unable to find any matching weather location to the query submitted!"))
-    }
-}
-
-extension CityViewModelTests: CityViewModelDelegate {
-    func didUpdateWeatherCondition(_ model: WeatherApp.CityViewModel, weatherModel: WeatherApp.Weather) {
-        weatherResult = weatherModel
-        getDataPromise.fulfill()
-    }
-
-    func didFailWithError(_ model: WeatherApp.CityViewModel, error: WeatherApp.APIError) {
-        self.error = error
-        errorPromise.fulfill()
     }
 }
