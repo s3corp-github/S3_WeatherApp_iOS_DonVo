@@ -7,17 +7,21 @@
 
 import Foundation
 
-struct CityViewModel {
+protocol WeatherInformationProtocol {
+    var didGetWeather: ((Weather) -> Void)? { get set }
+    var didFailWithError: ((APIError) -> Void)? { get set }
+
+    func getWeatherDetail(with service: WeatherService)
+}
+
+protocol CityViewModelProtocol: WeatherInformationProtocol {}
+
+struct CityViewModel: CityViewModelProtocol {
     var didGetWeather: ((Weather) -> Void)?
     var didFailWithError: ((APIError) -> Void)?
 
-    func fetchWeather(at city: String) {
-        let service: WeatherService = .getWeather(city)
-        getWeatherDetail(url: service.url)
-    }
-
-    private func getWeatherDetail(url: String) {
-        Network.shared().request(with: url) { (result: (Result<BaseResponse<WeatherData>, APIError>)) in
+    func getWeatherDetail(with service: WeatherService) {
+        Network.shared().request(with: service.url) { (result: (Result<BaseResponse<WeatherData>, APIError>)) in
             switch result {
             case .success(let decodedData):
                 guard let condition = decodedData.data.condition.first else {

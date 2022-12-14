@@ -9,16 +9,16 @@ import UIKit
 
 extension UIImageView {
     func loadFromUrl(url: String) {
-        DispatchQueue.global().async {
+        DispatchQueue.global().async { [weak self] in
             Network.shared().request(with: url) { result in
                 switch result {
                 case .success(let data):
                     DispatchQueue.main.async {
-                        self.image = UIImage(data: data)
+                        self?.image = UIImage(data: data)
                     }
                 case .failure(_):
                     DispatchQueue.main.async {
-                        self.image = UIImage()
+                        self?.image = UIImage()
                     }
                 }
             }

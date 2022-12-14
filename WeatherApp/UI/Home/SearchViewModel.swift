@@ -7,22 +7,32 @@
 
 import Foundation
 
-struct SearchViewModel {
+protocol CityListProtocol {
+    var didGetCityList: ((CityList) -> Void)? { get set }
+    var didFailWithError: ((APIError) -> Void)? { get set }
+
+    func getCityList(with service: SearchService)
+}
+
+protocol RecentCityProtocol {
+    func getRecentCity() -> [String]
+    func updateRecentCity(recent: String, recentList: [String])
+}
+
+typealias SearchViewModelProtocol = CityListProtocol & RecentCityProtocol
+
+struct SearchViewModel: SearchViewModelProtocol {
     private let userDefaults = UserDefaults.standard
+
     var didGetCityList: ((CityList) -> Void)?
     var didFailWithError: ((APIError) -> Void)?
 
-    func fetchCity(with cityPattern: String) {
-        let service: SearchService = .searchCity(cityPattern)
-        getCityList(with: service.url, pattern: cityPattern)
-    }
-
-    private func getCityList(with url: String, pattern: String) {
-        Network.shared().request(with: url) { (result: (Result<CityData,APIError>)) in
+    func getCityList(with service: SearchService) {
+        Network.shared().request(with: service.url) { (result: (Result<CityData,APIError>)) in
             switch result {
             case .success(let data):
                 let result = data.searchApi.result
-                let cityList = CityList(result: result, matchPattern: pattern)
+                let cityList = CityList(result: result, matchPattern: service.pattern)
                 didGetCityList?(cityList)
             case .failure(let error):
                 didFailWithError?(error)

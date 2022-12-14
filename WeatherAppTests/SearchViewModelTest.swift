@@ -45,7 +45,7 @@ final class SearchViewModelTest: XCTestCase {
         searchVM.didFailWithError = { _ in
             XCTFail("Got an error")
         }
-        searchVM.fetchCity(with: pattern)
+        searchVM.getCityList(with: .init(pattern: pattern))
         wait(for: [getDataPromise], timeout: 2)
 
         //then
@@ -70,7 +70,7 @@ final class SearchViewModelTest: XCTestCase {
             self?.error = error
             self?.errorPromise.fulfill()
         }
-        searchVM.fetchCity(with: pattern)
+        searchVM.getCityList(with: .init(pattern: pattern))
         wait(for: [errorPromise], timeout: 2)
 
         //then

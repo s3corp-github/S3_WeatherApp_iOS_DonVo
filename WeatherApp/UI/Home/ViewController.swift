@@ -16,10 +16,10 @@ class ViewController: UIViewController {
     //MARK: - Properties
     private let cellIdentifier = "Cell"
     private let searchController = UISearchController(searchResultsController: nil)
-    private var viewModel = SearchViewModel()
     private var debounceTimer: Timer?
     private var filteredCity: [String] = []
     private var recentSearchCity: [String] = []
+    private lazy var viewModel: SearchViewModelProtocol = SearchViewModel()
 
     //MARK: - ViewLifeCycle
     override func viewDidLoad() {
@@ -63,27 +63,25 @@ class ViewController: UIViewController {
 
     private func bind() {
         viewModel.didGetCityList = { [weak self] list in
-            guard let self = self else { return }
-            self.filteredCity.removeAll()
+            self?.filteredCity.removeAll()
             if list.cityList.count != 0 {
-                self.filteredCity = list.cityList
+                self?.filteredCity = list.cityList
                 DispatchQueue.main.async {
-                    self.tableView.reloadData()
+                    self?.tableView.reloadData()
                 }
             } else {
                 DispatchQueue.main.async {
-                    self.setEmptyMessage(with: "Unable to find any matching weather location to the query submitted!")
-                    self.tableView.reloadData()
+                    self?.setEmptyMessage(with: "Unable to find any matching weather location to the query submitted!")
+                    self?.tableView.reloadData()
                 }
             }
         }
 
         viewModel.didFailWithError = { [weak self] error in
-            guard let self = self else { return }
-            self.filteredCity.removeAll()
+            self?.filteredCity.removeAll()
             DispatchQueue.main.async {
-                self.setEmptyMessage(with: error.localizedDescription)
-                self.tableView.reloadData()
+                self?.setEmptyMessage(with: error.localizedDescription)
+                self?.tableView.reloadData()
             }
         }
     }
@@ -217,8 +215,8 @@ extension ViewController: UISearchResultsUpdating {
         debounceTimer?.invalidate()
 
         if searchController.isActive && handleInput != "" {
-            debounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
-                self.viewModel.fetchCity(with: handleInput)
+            debounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
+                self?.viewModel.getCityList(with: SearchService.init(pattern: handleInput))
             }
         }
     }

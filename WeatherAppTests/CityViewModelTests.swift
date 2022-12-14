@@ -43,7 +43,7 @@ final class CityViewModelTests: XCTestCase {
         cityVM.didFailWithError = { _ in
             XCTFail("Got an error")
         }
-        cityVM.fetchWeather(at: city)
+        cityVM.getWeatherDetail(with: .init(city: city))
         wait(for: [getDataPromise], timeout: 2)
 
         //then
@@ -63,7 +63,7 @@ final class CityViewModelTests: XCTestCase {
             self?.error = error
             self?.errorPromise.fulfill()
         }
-        cityVM.fetchWeather(at: city)
+        cityVM.getWeatherDetail(with: .init(city: city))
         wait(for: [errorPromise], timeout: 2)
 
         //then

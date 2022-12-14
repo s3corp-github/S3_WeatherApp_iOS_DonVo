@@ -7,18 +7,15 @@
 
 import Foundation
 
-enum SearchService {
-    case searchCity(String)
+struct SearchService {
+    var pattern: String
 }
 
 extension SearchService: BaseService {
     var params: Parameters {
-        switch self {
-        case .searchCity(let pattern):
-            return ["key": key,
-                    "format": "json",
-                    "q": pattern]
-        }
+        return ["key": key,
+                "format": "json",
+                "q": pattern]
     }
 
     var path: String {

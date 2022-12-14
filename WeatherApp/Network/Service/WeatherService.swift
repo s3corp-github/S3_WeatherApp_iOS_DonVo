@@ -7,18 +7,15 @@
 
 import Foundation
 
-enum WeatherService {
-    case getWeather(String)
+struct WeatherService {
+    var city: String
 }
 
 extension WeatherService: BaseService {
     var params: Parameters {
-        switch self {
-        case .getWeather(let location):
-            return ["key": key,
-                    "format": "json",
-                    "q": location]
-        }
+        return ["key": key,
+                "format": "json",
+                "q": city]
     }
 
     var path: String {
