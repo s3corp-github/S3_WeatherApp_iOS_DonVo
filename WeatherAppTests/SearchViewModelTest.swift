@@ -38,8 +38,8 @@ final class SearchViewModelTest: XCTestCase {
         var wrongCount = 0
 
         //when
-        searchVM.didGetCityList = { [weak self] list in
-            self?.list = list.cityList
+        searchVM.didGetCityListFromAPI = { [weak self] list in
+            self?.list = list
             self?.getDataPromise.fulfill()
         }
         searchVM.didFailWithError = { _ in
@@ -63,7 +63,7 @@ final class SearchViewModelTest: XCTestCase {
         let pattern = "asdasd"
 
         //when
-        searchVM.didGetCityList = { _ in
+        searchVM.didGetCityListFromAPI = { _ in
             XCTFail("Expect to found an error but success instead")
         }
         searchVM.didFailWithError = { [weak self] error in
@@ -82,9 +82,9 @@ final class SearchViewModelTest: XCTestCase {
         list = []
 
         //when
-        searchVM.updateRecentCity(recent: "Ho Chi Minh", recentList: ["Singapore", "Canada"])
-        list = searchVM.getRecentCity()
-
+        //searchVM.updateRecentCity(recent: ["Singapore", "Canada"])
+        searchVM.updateRecentCity(recent: "Ho Chi Minh")
+        searchVM.getRecentCity()
         //then
         XCTAssertEqual(list, ["Ho Chi Minh" ,"Singapore", "Canada"])
     }
@@ -94,8 +94,9 @@ final class SearchViewModelTest: XCTestCase {
         list = []
 
         //when
-        searchVM.updateRecentCity(recent: "Ho Chi Minh", recentList: ["Singapore", "Canada", "Paris", "Hanoi", "Bangkok", "New York", "Texas", "Tokyo", "Seoul", "Osaka"])
-        list = searchVM.getRecentCity()
+        //searchVM.updateRecentCity(recent: ["Singapore", "Canada", "Paris", "Hanoi", "Bangkok", "New York", "Texas", "Tokyo", "Seoul", "Osaka"])
+        searchVM.updateRecentCity(recent: "Ho Chi Minh")
+        searchVM.getRecentCity()
 
         //then
         XCTAssertEqual(list, ["Ho Chi Minh" ,"Singapore", "Canada", "Paris", "Hanoi", "Bangkok", "New York", "Texas", "Tokyo", "Seoul"])

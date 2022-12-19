@@ -16,30 +16,40 @@ class ViewController: UIViewController {
     //MARK: - Properties
     private let cellIdentifier = "Cell"
     private let searchController = UISearchController(searchResultsController: nil)
-    private var debounceTimer: Timer?
-    private var filteredCity: [String] = []
-    private var recentSearchCity: [String] = []
+    private var cityList: [String] = []
+
     private lazy var viewModel: SearchViewModelProtocol = SearchViewModel()
+    private lazy var emptyLabel: UILabel = {
+        let rect = CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(
+            width: self.view.bounds.size.width,
+            height: self.view.bounds.size.height))
+
+        let messageLabel = UILabel(frame: rect)
+        messageLabel.textColor = UIColor.black
+        messageLabel.numberOfLines = 0;
+        messageLabel.textAlignment = .center;
+        messageLabel.sizeToFit()
+        return messageLabel
+    }()
 
     //MARK: - ViewLifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.delegate = self
-        tableView.dataSource = self
-
         setUpUI()
-        setUpNotificationCenter()
         bind()
+        viewModel.getRecentCity()
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        recentSearchCity = viewModel.getRecentCity()
-        tableView.reloadData()
+        searchBar(searchController.searchBar, textDidChange: viewModel.previousSearchPattern)
     }
 
     //MARK: - Setup
     private func setUpUI() {
-        searchController.searchResultsUpdater = self
+        self.hideKeyboardWhenTappedAround()
+        self.handleKeyboardContrain(contrainBottom: tableViewContrainBottom)
+        tableView.delegate = self
+        tableView.dataSource = self
         searchController.hidesNavigationBarDuringPresentation = false;
         searchController.searchBar.searchBarStyle = .minimal
         searchController.searchBar.delegate = self
@@ -47,25 +57,11 @@ class ViewController: UIViewController {
         self.definesPresentationContext = true
     }
 
-    private func setUpNotificationCenter() {
-        let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(
-          forName: UIResponder.keyboardWillChangeFrameNotification,
-          object: nil, queue: .main) { (notification) in
-            self.handleKeyboard(notification: notification)
-        }
-        notificationCenter.addObserver(
-          forName: UIResponder.keyboardWillHideNotification,
-          object: nil, queue: .main) { (notification) in
-            self.handleKeyboard(notification: notification)
-        }
-    }
-
     private func bind() {
-        viewModel.didGetCityList = { [weak self] list in
-            self?.filteredCity.removeAll()
-            if list.cityList.count != 0 {
-                self?.filteredCity = list.cityList
+        viewModel.didGetCityListFromAPI = { [weak self] list in
+            self?.cityList.removeAll()
+            if list.count != 0 {
+                self?.cityList = list
                 DispatchQueue.main.async {
                     self?.tableView.reloadData()
                 }
@@ -76,9 +72,22 @@ class ViewController: UIViewController {
                 }
             }
         }
-
+        viewModel.didGetRecentCityList = { [weak self] list in
+            self?.cityList.removeAll()
+            if list.count != 0 {
+                self?.cityList = list
+                DispatchQueue.main.async {
+                    self?.tableView.reloadData()
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self?.setEmptyMessage(with: "You don't have any search history yet!")
+                    self?.tableView.reloadData()
+                }
+            }
+        }
         viewModel.didFailWithError = { [weak self] error in
-            self?.filteredCity.removeAll()
+            self?.cityList.removeAll()
             DispatchQueue.main.async {
                 self?.setEmptyMessage(with: error.localizedDescription)
                 self?.tableView.reloadData()
@@ -87,66 +96,21 @@ class ViewController: UIViewController {
     }
 
     //MARK: - Methods
-    private func handleKeyboard(notification: Notification) {
-        guard notification.name == UIResponder.keyboardWillChangeFrameNotification else {
-            tableViewContrainBottom.constant = 0
-            view.layoutIfNeeded()
-            return
-        }
-
-        guard let info = notification.userInfo,
-              let keyboardFrame = info[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue
-        else { return }
-
-        let keyboardHeight = keyboardFrame.cgRectValue.size.height
-        UIView.animate(withDuration: 0.1, animations: { () -> Void in
-            self.tableViewContrainBottom.constant = keyboardHeight
-            self.view.layoutIfNeeded()
-        })
+    private func updateRecentCity(with recent: String) {
+        viewModel.updateRecentCity(recent: recent)
     }
 
-    private func updateRecentCity(with recent: String) {
-        viewModel.updateRecentCity(recent: recent, recentList: recentSearchCity)
+    private func getData(with pattern: String ) {
+        viewModel.getData(with: pattern)
     }
 
     private func setEmptyMessage(with message: String) {
-        let rect = CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(
-            width: self.view.bounds.size.width,
-            height: self.view.bounds.size.height))
-        let messageLabel = UILabel(frame: rect)
-        messageLabel.text = message
-        messageLabel.textColor = UIColor.black
-        messageLabel.numberOfLines = 0;
-        messageLabel.textAlignment = .center;
-        messageLabel.sizeToFit()
-
-        tableView.backgroundView = messageLabel;
-        tableView.separatorStyle = .none;
-    }
-
-    private func setLoadingIndicator() {
-        let rect = CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(
-            width: self.view.bounds.size.width,
-            height: self.view.bounds.size.height))
-        let view = UIView(frame: rect)
-
-        let indicator = UIActivityIndicatorView()
-        indicator.translatesAutoresizingMaskIntoConstraints = false
-        indicator.sizeToFit()
-        indicator.startAnimating()
-        view.addSubview(indicator)
-        NSLayoutConstraint.activate([
-            indicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            indicator.topAnchor.constraint(equalTo: view.topAnchor, constant: 10)
-        ])
-
-        tableView.backgroundView = view;
-        tableView.separatorStyle = .none;
+        emptyLabel.text = message
+        tableView.backgroundView = emptyLabel;
     }
 
     private func restoreTableView() {
         tableView.backgroundView = nil
-        tableView.separatorStyle = .singleLine
     }
 
     //MARK: - Navigate
@@ -161,12 +125,7 @@ class ViewController: UIViewController {
 //MARK: - UITableViewDelegate
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var cityName = ""
-        if searchController.isActive && searchController.searchBar.text?.handleWhiteSpace() != "" {
-            cityName = filteredCity[indexPath.row]
-        } else {
-            cityName = recentSearchCity[indexPath.row]
-        }
+        let cityName = cityList[indexPath.row]
         navigateToCityScreen(name: cityName)
     }
 }
@@ -174,58 +133,27 @@ extension ViewController: UITableViewDelegate {
 //MARK: - UITableViewDataSource
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if searchController.isActive && searchController.searchBar.text?.handleWhiteSpace() != "" {
-            if filteredCity.count > 0 {
-                restoreTableView()
-            }
-            return filteredCity.count
-          }
-
-        if recentSearchCity.count > 0 {
+        if cityList.count > 0 {
             restoreTableView()
-        } else {
-            setEmptyMessage(with: "You don't have any search history yet!")
         }
-        return recentSearchCity.count
+        return cityList.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
-          let city: String
-        if searchController.isActive && searchController.searchBar.text?.handleWhiteSpace() != "" {
-              city = filteredCity[indexPath.row]
-          } else {
-              city = recentSearchCity[indexPath.row]
-          }
-          cell.textLabel?.text = city
-          return cell
+        let city = cityList[indexPath.row]
+        cell.textLabel?.text = city
+        return cell
     }
 }
 
-//MARK: - UISearchResultsUpdating
-extension ViewController: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
-        guard let handleInput = searchController.searchBar.text?.handleWhiteSpace() else { return }
-
-        self.filteredCity.removeAll()
-        DispatchQueue.main.async {
-            self.setLoadingIndicator()
-            self.tableView.reloadData()
-        }
-        debounceTimer?.invalidate()
-
-        if searchController.isActive && handleInput != "" {
-            debounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
-                self?.viewModel.getCityList(with: SearchService.init(pattern: handleInput))
-            }
-        }
-    }
- }
-
 //MARK: - UISearchBarDelegate
 extension ViewController: UISearchBarDelegate {
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        guard let handleInput = searchController.searchBar.text?.handleWhiteSpace() else { return }
-        navigateToCityScreen(name: handleInput)
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        getData(with: searchText)
+    }
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        getData(with: "")
     }
 }

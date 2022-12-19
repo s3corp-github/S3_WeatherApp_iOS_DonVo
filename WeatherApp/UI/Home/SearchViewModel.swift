@@ -8,52 +8,73 @@
 import Foundation
 
 protocol CityListProtocol {
-    var didGetCityList: ((CityList) -> Void)? { get set }
+    var didGetCityListFromAPI: (([String]) -> Void)? { get set }
     var didFailWithError: ((APIError) -> Void)? { get set }
 
     func getCityList(with service: SearchService)
 }
 
 protocol RecentCityProtocol {
-    func getRecentCity() -> [String]
-    func updateRecentCity(recent: String, recentList: [String])
+    var didGetRecentCityList: (([String]) -> Void)? { get set }
+
+    func getRecentCity()
+    func updateRecentCity(recent: String)
 }
 
-typealias SearchViewModelProtocol = CityListProtocol & RecentCityProtocol
+protocol SearchViewModelProtocol: CityListProtocol, RecentCityProtocol {
+    var previousSearchPattern: String { get set }
+    func getData(with input: String)
 
-struct SearchViewModel: SearchViewModelProtocol {
+}
+
+class SearchViewModel: SearchViewModelProtocol {
     private let userDefaults = UserDefaults.standard
 
-    var didGetCityList: ((CityList) -> Void)?
+    var previousSearchPattern: String = ""
+    var didGetCityListFromAPI: (([String]) -> Void)?
+    var didGetRecentCityList: (([String]) -> Void)?
     var didFailWithError: ((APIError) -> Void)?
 
+    func getData(with input: String) {
+        let handleInput = input.handleWhiteSpace()
+        guard handleInput != "" else {
+            previousSearchPattern = handleInput
+            getRecentCity()
+            return
+        }
+
+        guard handleInput != previousSearchPattern else { return }
+        previousSearchPattern = handleInput
+        getCityList(with: .init(pattern: handleInput))
+    }
+
     func getCityList(with service: SearchService) {
-        Network.shared().request(with: service.url) { (result: (Result<CityData,APIError>)) in
+        Network.shared().request(with: service.url) { [weak self] (result: (Result<CityData,APIError>)) in
             switch result {
             case .success(let data):
                 let result = data.searchApi.result
-                let cityList = CityList(result: result, matchPattern: service.pattern)
-                didGetCityList?(cityList)
+                let list = CityList(result: result, matchPattern: service.pattern)
+                self?.didGetCityListFromAPI?(list.cityList)
             case .failure(let error):
-                didFailWithError?(error)
+                self?.didFailWithError?(error)
             }
         }
     }
 
-    func getRecentCity() -> [String] {
+    func getRecentCity() {
         let recenCity = userDefaults.object(forKey: "recentCity") as? [String] ?? []
-        return recenCity
+        didGetRecentCityList?(recenCity)
     }
 
-    func updateRecentCity(recent: String, recentList: [String]) {
-        var list = recentList
-        if let index = list.firstIndex(of: recent) {
-            list.remove(at: index)
+    func updateRecentCity(recent: String) {
+        var recenCity = userDefaults.object(forKey: "recentCity") as? [String] ?? []
+        if let index = recenCity.firstIndex(of: recent) {
+            recenCity.remove(at: index)
         }
-        list.insert(recent, at: 0)
-        if list.count > 10 {
-            list.removeLast()
+        recenCity.insert(recent, at: 0)
+        if recenCity.count > 10 {
+            recenCity.removeLast()
         }
-        userDefaults.set(list, forKey: "recentCity")
+        userDefaults.set(recenCity, forKey: "recentCity")
     }
 }

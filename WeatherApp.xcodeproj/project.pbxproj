@@ -31,6 +31,8 @@
 		34A8E11F29375D87001E25BD /* BaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A8E11E29375D87001E25BD /* BaseService.swift */; };
 		34A8E12229375F08001E25BD /* SearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A8E12129375F08001E25BD /* SearchService.swift */; };
 		34AA88A0293DD25D00865A98 /* String+handleWhiteSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AA889F293DD25D00865A98 /* String+handleWhiteSpace.swift */; };
+		34BA27AC2950152B00DBFC47 /* String+subscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34BA27AB2950152B00DBFC47 /* String+subscript.swift */; };
+		34BA27AE29501E8000DBFC47 /* UIViewController+keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34BA27AD29501E8000DBFC47 /* UIViewController+keyboard.swift */; };
 		34C8417F293F3554009E732B /* NetworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C8417E293F3554009E732B /* NetworkTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -72,6 +74,8 @@
 		34A8E11E29375D87001E25BD /* BaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseService.swift; sourceTree = "<group>"; };
 		34A8E12129375F08001E25BD /* SearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchService.swift; sourceTree = "<group>"; };
 		34AA889F293DD25D00865A98 /* String+handleWhiteSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+handleWhiteSpace.swift"; sourceTree = "<group>"; };
+		34BA27AB2950152B00DBFC47 /* String+subscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+subscript.swift"; sourceTree = "<group>"; };
+		34BA27AD29501E8000DBFC47 /* UIViewController+keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+keyboard.swift"; sourceTree = "<group>"; };
 		34C8417E293F3554009E732B /* NetworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -162,7 +166,9 @@
 				34A8E1182936F3D1001E25BD /* UIImageView+loadFromUrl.swift */,
 				34A6CF3C293994E800E6F5AD /* Array+getElementMatching.swift */,
 				34A6CF402939BB1800E6F5AD /* UIViewController+showAlert.swift */,
+				34BA27AD29501E8000DBFC47 /* UIViewController+keyboard.swift */,
 				34AA889F293DD25D00865A98 /* String+handleWhiteSpace.swift */,
+				34BA27AB2950152B00DBFC47 /* String+subscript.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -329,8 +335,10 @@
 				34AA88A0293DD25D00865A98 /* String+handleWhiteSpace.swift in Sources */,
 				34A6CF3D293994E800E6F5AD /* Array+getElementMatching.swift in Sources */,
 				34A8E11B29370660001E25BD /* SearchViewModel.swift in Sources */,
+				34BA27AC2950152B00DBFC47 /* String+subscript.swift in Sources */,
 				34A8E11D29370AF3001E25BD /* City.swift in Sources */,
 				34A6CF412939BB1800E6F5AD /* UIViewController+showAlert.swift in Sources */,
+				34BA27AE29501E8000DBFC47 /* UIViewController+keyboard.swift in Sources */,
 				34A8E11F29375D87001E25BD /* BaseService.swift in Sources */,
 				34A8E1192936F3D1001E25BD /* UIImageView+loadFromUrl.swift in Sources */,
 				344C012C2935C79B001D7917 /* Network.swift in Sources */,
