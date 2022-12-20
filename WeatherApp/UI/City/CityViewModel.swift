@@ -16,20 +16,20 @@ protocol WeatherInformationProtocol {
 
 protocol CityViewModelProtocol: WeatherInformationProtocol {}
 
-struct CityViewModel: CityViewModelProtocol {
+class CityViewModel: CityViewModelProtocol {
     var didGetWeather: ((Weather) -> Void)?
     var didFailWithError: ((APIError) -> Void)?
 
     func getWeatherDetail(with service: WeatherService) {
-        Network.shared().request(with: service.url) { (result: (Result<BaseResponse<WeatherData>, APIError>)) in
+        Network.shared().request(with: service.url) { [weak self] (result: (Result<BaseResponse<WeatherData>, APIError>)) in
             switch result {
             case .success(let decodedData):
                 guard let condition = decodedData.data.condition.first else {
-                    didFailWithError?(.errorDataNotExist)
+                    self?.didFailWithError?(.errorDataNotExist)
                     return
                 }
                 guard let area = decodedData.data.area.first else {
-                    didFailWithError?(.errorDataNotExist)
+                    self?.didFailWithError?(.errorDataNotExist)
                     return
                 }
                 let weather = Weather(
@@ -38,9 +38,9 @@ struct CityViewModel: CityViewModelProtocol {
                     weatherIconUrl: condition.weatherIconUrl,
                     humidity: condition.humidity,
                     name: area.city)
-                didGetWeather?(weather)
+                self?.didGetWeather?(weather)
             case .failure(let error):
-                didFailWithError?(error)
+                self?.didFailWithError?(error)
             }
         }
     }

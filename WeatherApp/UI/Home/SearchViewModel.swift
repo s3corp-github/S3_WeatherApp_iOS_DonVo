@@ -11,7 +11,7 @@ protocol CityListProtocol {
     var didGetCityListFromAPI: (([String]) -> Void)? { get set }
     var didFailWithError: ((APIError) -> Void)? { get set }
 
-    func getCityList(with service: SearchService)
+    func getCityList(with input: String)
 }
 
 protocol RecentCityProtocol {
@@ -22,33 +22,24 @@ protocol RecentCityProtocol {
 }
 
 protocol SearchViewModelProtocol: CityListProtocol, RecentCityProtocol {
-    var previousSearchPattern: String { get set }
-    func getData(with input: String)
-
+    var cityList: [String] { get set }
 }
 
 class SearchViewModel: SearchViewModelProtocol {
     private let userDefaults = UserDefaults.standard
 
+    var cityList: [String] = []
     var previousSearchPattern: String = ""
     var didGetCityListFromAPI: (([String]) -> Void)?
     var didGetRecentCityList: (([String]) -> Void)?
     var didFailWithError: ((APIError) -> Void)?
 
-    func getData(with input: String) {
+    func getCityList(with input: String) {
         let handleInput = input.handleWhiteSpace()
-        guard handleInput != "" else {
-            previousSearchPattern = handleInput
-            getRecentCity()
-            return
-        }
-
         guard handleInput != previousSearchPattern else { return }
         previousSearchPattern = handleInput
-        getCityList(with: .init(pattern: handleInput))
-    }
 
-    func getCityList(with service: SearchService) {
+        let service = SearchService.init(pattern: handleInput)
         Network.shared().request(with: service.url) { [weak self] (result: (Result<CityData,APIError>)) in
             switch result {
             case .success(let data):
@@ -62,6 +53,7 @@ class SearchViewModel: SearchViewModelProtocol {
     }
 
     func getRecentCity() {
+        previousSearchPattern = ""
         let recenCity = userDefaults.object(forKey: "recentCity") as? [String] ?? []
         didGetRecentCityList?(recenCity)
     }

@@ -45,7 +45,7 @@ final class SearchViewModelTest: XCTestCase {
         searchVM.didFailWithError = { _ in
             XCTFail("Got an error")
         }
-        searchVM.getCityList(with: .init(pattern: pattern))
+        searchVM.getCityList(with: pattern)
         wait(for: [getDataPromise], timeout: 2)
 
         //then
@@ -70,7 +70,7 @@ final class SearchViewModelTest: XCTestCase {
             self?.error = error
             self?.errorPromise.fulfill()
         }
-        searchVM.getCityList(with: .init(pattern: pattern))
+        searchVM.getCityList(with: pattern)
         wait(for: [errorPromise], timeout: 2)
 
         //then
@@ -79,24 +79,47 @@ final class SearchViewModelTest: XCTestCase {
 
     func testGetCityListInUserDefault() throws {
         //given
+        getDataPromise = expectation(description: "get recent city")
         list = []
 
         //when
-        //searchVM.updateRecentCity(recent: ["Singapore", "Canada"])
+        searchVM.didGetRecentCityList = { [weak self] list in
+            self?.list = list
+            self?.getDataPromise.fulfill()
+        }
+        searchVM.updateRecentCity(recent: "Canada")
+        searchVM.updateRecentCity(recent: "Singapore")
         searchVM.updateRecentCity(recent: "Ho Chi Minh")
         searchVM.getRecentCity()
+        wait(for: [getDataPromise], timeout: 1)
+
         //then
         XCTAssertEqual(list, ["Ho Chi Minh" ,"Singapore", "Canada"])
     }
 
     func testGetCityListInUserDefaultWithMoreThanTenItems() throws {
         //given
+        getDataPromise = expectation(description: "get recent city with ten more items")
         list = []
 
         //when
-        //searchVM.updateRecentCity(recent: ["Singapore", "Canada", "Paris", "Hanoi", "Bangkok", "New York", "Texas", "Tokyo", "Seoul", "Osaka"])
+        searchVM.didGetRecentCityList = { [weak self] list in
+            self?.list = list
+            self?.getDataPromise.fulfill()
+        }
+        searchVM.updateRecentCity(recent: "Osaka")
+        searchVM.updateRecentCity(recent: "Seoul")
+        searchVM.updateRecentCity(recent: "Tokyo")
+        searchVM.updateRecentCity(recent: "Texas")
+        searchVM.updateRecentCity(recent: "New York")
+        searchVM.updateRecentCity(recent: "Bangkok")
+        searchVM.updateRecentCity(recent: "Hanoi")
+        searchVM.updateRecentCity(recent: "Paris")
+        searchVM.updateRecentCity(recent: "Canada")
+        searchVM.updateRecentCity(recent: "Singapore")
         searchVM.updateRecentCity(recent: "Ho Chi Minh")
         searchVM.getRecentCity()
+        wait(for: [getDataPromise], timeout: 1)
 
         //then
         XCTAssertEqual(list, ["Ho Chi Minh" ,"Singapore", "Canada", "Paris", "Hanoi", "Bangkok", "New York", "Texas", "Tokyo", "Seoul"])

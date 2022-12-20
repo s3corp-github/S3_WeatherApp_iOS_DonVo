@@ -14,16 +14,13 @@ class ViewController: UIViewController {
     @IBOutlet weak var tableViewContrainBottom: NSLayoutConstraint!
 
     //MARK: - Properties
-    private let cellIdentifier = "Cell"
     private let searchController = UISearchController(searchResultsController: nil)
-    private var cityList: [String] = []
 
     private lazy var viewModel: SearchViewModelProtocol = SearchViewModel()
     private lazy var emptyLabel: UILabel = {
         let rect = CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(
             width: self.view.bounds.size.width,
             height: self.view.bounds.size.height))
-
         let messageLabel = UILabel(frame: rect)
         messageLabel.textColor = UIColor.black
         messageLabel.numberOfLines = 0;
@@ -37,87 +34,73 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         setUpUI()
         bind()
-        viewModel.getRecentCity()
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        searchBar(searchController.searchBar, textDidChange: viewModel.previousSearchPattern)
+        let searchText = searchController.searchBar.text ?? ""
+        if searchText == "" {
+            viewModel.getRecentCity()
+        }
     }
 
     //MARK: - Setup
     private func setUpUI() {
-        self.hideKeyboardWhenTappedAround()
-        self.handleKeyboardContrain(contrainBottom: tableViewContrainBottom)
+        hideKeyboardWhenTappedAround()
+        handleKeyboardContrain(contrainBottom: tableViewContrainBottom)
         tableView.delegate = self
         tableView.dataSource = self
         searchController.hidesNavigationBarDuringPresentation = false;
         searchController.searchBar.searchBarStyle = .minimal
         searchController.searchBar.delegate = self
-        self.navigationItem.titleView = self.searchController.searchBar;
-        self.definesPresentationContext = true
+        navigationItem.titleView = self.searchController.searchBar;
+        definesPresentationContext = true
     }
 
     private func bind() {
         viewModel.didGetCityListFromAPI = { [weak self] list in
-            self?.cityList.removeAll()
-            if list.count != 0 {
-                self?.cityList = list
-                DispatchQueue.main.async {
-                    self?.tableView.reloadData()
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self?.setEmptyMessage(with: "Unable to find any matching weather location to the query submitted!")
-                    self?.tableView.reloadData()
-                }
+            self?.viewModel.cityList = list
+            if self?.viewModel.cityList.count == 0 {
+                self?.setEmptyMessage(with: "Unable to find any matching weather location to the query submitted!")
             }
+            self?.reloadData()
         }
         viewModel.didGetRecentCityList = { [weak self] list in
-            self?.cityList.removeAll()
-            if list.count != 0 {
-                self?.cityList = list
-                DispatchQueue.main.async {
-                    self?.tableView.reloadData()
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self?.setEmptyMessage(with: "You don't have any search history yet!")
-                    self?.tableView.reloadData()
-                }
+            self?.viewModel.cityList = list
+            if self?.viewModel.cityList.count == 0 {
+                self?.setEmptyMessage(with: "You don't have any search history yet!")
             }
+            self?.reloadData()
         }
         viewModel.didFailWithError = { [weak self] error in
-            self?.cityList.removeAll()
-            DispatchQueue.main.async {
-                self?.setEmptyMessage(with: error.localizedDescription)
-                self?.tableView.reloadData()
-            }
+            self?.viewModel.cityList.removeAll()
+            self?.setEmptyMessage(with: error.localizedDescription)
+            self?.reloadData()
         }
     }
 
     //MARK: - Methods
-    private func updateRecentCity(with recent: String) {
-        viewModel.updateRecentCity(recent: recent)
-    }
-
-    private func getData(with pattern: String ) {
-        viewModel.getData(with: pattern)
-    }
-
     private func setEmptyMessage(with message: String) {
-        emptyLabel.text = message
-        tableView.backgroundView = emptyLabel;
+        DispatchQueue.main.async { [weak self] in
+            self?.emptyLabel.text = message
+            self?.tableView.backgroundView = self?.emptyLabel
+        }
     }
 
     private func restoreTableView() {
         tableView.backgroundView = nil
     }
 
+    private func reloadData() {
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.reloadData()
+        }
+    }
+
     //MARK: - Navigate
     private func navigateToCityScreen(name: String) {
         let cityVc = CityViewController()
         cityVc.cityName = name
-        updateRecentCity(with: name)
+        viewModel.updateRecentCity(recent: name)
         navigationController?.pushViewController(cityVc, animated: true)
     }
 }
@@ -125,7 +108,7 @@ class ViewController: UIViewController {
 //MARK: - UITableViewDelegate
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cityName = cityList[indexPath.row]
+        let cityName = viewModel.cityList[indexPath.row]
         navigateToCityScreen(name: cityName)
     }
 }
@@ -133,16 +116,15 @@ extension ViewController: UITableViewDelegate {
 //MARK: - UITableViewDataSource
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if cityList.count > 0 {
+        if viewModel.cityList.count > 0 {
             restoreTableView()
         }
-        return cityList.count
+        return viewModel.cityList.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
-        let city = cityList[indexPath.row]
-        cell.textLabel?.text = city
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        cell.textLabel?.text = viewModel.cityList[indexPath.row]
         return cell
     }
 }
@@ -150,10 +132,14 @@ extension ViewController: UITableViewDataSource {
 //MARK: - UISearchBarDelegate
 extension ViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        getData(with: searchText)
+        guard searchText != "" else {
+            viewModel.getRecentCity()
+            return
+        }
+        viewModel.getCityList(with: searchText)
     }
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        getData(with: "")
+        viewModel.getRecentCity()
     }
 }
