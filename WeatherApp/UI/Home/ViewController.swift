@@ -16,7 +16,7 @@ class ViewController: UIViewController {
     //MARK: - Properties
     private let searchController = UISearchController(searchResultsController: nil)
 
-    private lazy var viewModel: SearchViewModelProtocol = SearchViewModel()
+    private lazy var viewModel: SearchViewModelProtocol = SearchViewModel(service: .init())
     private lazy var emptyLabel: UILabel = {
         let rect = CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(
             width: self.view.bounds.size.width,
@@ -37,15 +37,13 @@ class ViewController: UIViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        let searchText = searchController.searchBar.text ?? ""
-        if searchText == "" {
+        if viewModel.previousSearchPattern == "" {
             viewModel.getRecentCity()
         }
     }
 
     //MARK: - Setup
     private func setUpUI() {
-        hideKeyboardWhenTappedAround()
         handleKeyboardContrain(contrainBottom: tableViewContrainBottom)
         tableView.delegate = self
         tableView.dataSource = self
@@ -57,7 +55,8 @@ class ViewController: UIViewController {
     }
 
     private func bind() {
-        viewModel.didGetCityListFromAPI = { [weak self] list in
+        viewModel.didGetCityListFromAPI = { [weak self] list, pattern in
+            guard self?.viewModel.previousSearchPattern == pattern else { return }
             self?.viewModel.cityList = list
             if self?.viewModel.cityList.count == 0 {
                 self?.setEmptyMessage(with: "Unable to find any matching weather location to the query submitted!")
@@ -71,7 +70,8 @@ class ViewController: UIViewController {
             }
             self?.reloadData()
         }
-        viewModel.didFailWithError = { [weak self] error in
+        viewModel.didFailWithError = { [weak self] error, pattern in
+            guard self?.viewModel.previousSearchPattern == pattern else { return }
             self?.viewModel.cityList.removeAll()
             self?.setEmptyMessage(with: error.localizedDescription)
             self?.reloadData()
@@ -132,14 +132,10 @@ extension ViewController: UITableViewDataSource {
 //MARK: - UISearchBarDelegate
 extension ViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        guard searchText != "" else {
-            viewModel.getRecentCity()
-            return
-        }
-        viewModel.getCityList(with: searchText)
+        viewModel.getData(with: searchText)
     }
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        viewModel.getRecentCity()
+        viewModel.getData(with: "")
     }
 }

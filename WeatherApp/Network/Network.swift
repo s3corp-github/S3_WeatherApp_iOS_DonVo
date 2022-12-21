@@ -77,8 +77,8 @@ final class Network {
         task.resume()
     }
 
-    func request<T: Decodable>(with urlString: String, completion: @escaping (Result<T,APIError>) -> Void) {
-        guard let handleUrl = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+    func request<T: Decodable>(with endPoint: Endpoint, completion: @escaping (Result<T,APIError>) -> Void) {
+        guard let handleUrl = endPoint.url.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
             completion(.failure(.errorURL))
             return
         }

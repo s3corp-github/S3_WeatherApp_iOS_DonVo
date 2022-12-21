@@ -20,16 +20,17 @@ extension UIViewController {
     }
 
     func handleKeyboardContrain(contrainBottom: NSLayoutConstraint) {
+        hideKeyboardWhenTappedAround()
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(
           forName: UIResponder.keyboardWillChangeFrameNotification,
-          object: nil, queue: .main) { (notification) in
-              self.handleKeyboard(notification: notification, contrainBottom: contrainBottom)
+          object: nil, queue: .main) { [weak self] (notification) in
+              self?.handleKeyboard(notification: notification, contrainBottom: contrainBottom)
         }
         notificationCenter.addObserver(
           forName: UIResponder.keyboardWillHideNotification,
-          object: nil, queue: .main) { (notification) in
-              self.handleKeyboard(notification: notification, contrainBottom: contrainBottom)
+          object: nil, queue: .main) { [weak self] (notification) in
+              self?.handleKeyboard(notification: notification, contrainBottom: contrainBottom)
         }
 
     }

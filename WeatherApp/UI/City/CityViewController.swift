@@ -16,14 +16,14 @@ class CityViewController: UIViewController {
     @IBOutlet weak var currentWeatherLabel: UILabel!
 
     //MARK: - Properties
-    var cityName: String!
-    private lazy var viewModel: CityViewModelProtocol = CityViewModel()
+    var cityName: String?
+    private lazy var viewModel: CityViewModelProtocol = CityViewModel(service: .init())
 
     //MARK: - ViewLifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         bind()
-        viewModel.getWeatherDetail(with: WeatherService.init(city: cityName))
+        viewModel.getWeatherDetail(city: cityName ?? "")
     }
 
     private func bind() {
