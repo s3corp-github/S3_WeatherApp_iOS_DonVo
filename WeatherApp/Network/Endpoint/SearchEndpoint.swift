@@ -15,16 +15,34 @@ extension SearchEndpoint: Endpoint {
     var httpMethods: HTTPMethod {
         switch self {
         case .getCityList:
-            return .GET
+            return .get
         }
     }
 
-    var params: Parameters {
+    var baseUrl: String {
+        return "https://api.worldweatheronline.com/"
+    }
+
+    var params: Parameters? {
         switch self {
         case .getCityList(let pattern):
             return ["key": key,
                     "format": "json",
                     "q": pattern]
+        }
+    }
+
+    var headers: [String : Any]? {
+        switch self {
+        case .getCityList:
+            return ["Content-Type": "application/json"]
+        }
+    }
+
+    var body: [String : Any]? {
+        switch self {
+        case .getCityList:
+            return [:]
         }
     }
 

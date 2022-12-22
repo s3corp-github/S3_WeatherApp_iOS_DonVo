@@ -29,7 +29,6 @@ protocol SearchViewModelProtocol: CityListProtocol, RecentCityProtocol {
 }
 
 class SearchViewModel: SearchViewModelProtocol {
-    private let userDefaults = UserDefaults.standard
     let searchService: SearchService
 
     var cityList: [String] = []
@@ -66,12 +65,12 @@ class SearchViewModel: SearchViewModelProtocol {
     }
 
     func getRecentCity() {
-        let recenCity = userDefaults.object(forKey: "recentCity") as? [String] ?? []
+        let recenCity = UserDefaultsHelper.getData(type: [String].self, forKey: .recentCity) ?? []
         didGetRecentCityList?(recenCity)
     }
 
     func updateRecentCity(recent: String) {
-        var recenCity = userDefaults.object(forKey: "recentCity") as? [String] ?? []
+        var recenCity = UserDefaultsHelper.getData(type: [String].self, forKey: .recentCity) ?? []
         if let index = recenCity.firstIndex(of: recent) {
             recenCity.remove(at: index)
         }
@@ -79,6 +78,6 @@ class SearchViewModel: SearchViewModelProtocol {
         if recenCity.count > 10 {
             recenCity.removeLast()
         }
-        userDefaults.set(recenCity, forKey: "recentCity")
+        UserDefaultsHelper.setData(value: recenCity, key: .recentCity)
     }
 }

@@ -18,7 +18,7 @@ final class SearchViewModelTest: XCTestCase {
 
     override func setUpWithError() throws {
         try! super.setUpWithError()
-        searchVM = SearchViewModel()
+        searchVM = SearchViewModel(service: .init())
         list = []
     }
 
@@ -38,11 +38,11 @@ final class SearchViewModelTest: XCTestCase {
         var wrongCount = 0
 
         //when
-        searchVM.didGetCityListFromAPI = { [weak self] list in
+        searchVM.didGetCityListFromAPI = { [weak self] list, _ in
             self?.list = list
             self?.getDataPromise.fulfill()
         }
-        searchVM.didFailWithError = { _ in
+        searchVM.didFailWithError = { _, _ in
             XCTFail("Got an error")
         }
         searchVM.getCityList(with: pattern)
@@ -63,10 +63,10 @@ final class SearchViewModelTest: XCTestCase {
         let pattern = "asdasd"
 
         //when
-        searchVM.didGetCityListFromAPI = { _ in
+        searchVM.didGetCityListFromAPI = { _, _ in
             XCTFail("Expect to found an error but success instead")
         }
-        searchVM.didFailWithError = { [weak self] error in
+        searchVM.didFailWithError = { [weak self] error, _ in
             self?.error = error
             self?.errorPromise.fulfill()
         }
@@ -83,6 +83,7 @@ final class SearchViewModelTest: XCTestCase {
         list = []
 
         //when
+        UserDefaultsHelper.clearAll()
         searchVM.didGetRecentCityList = { [weak self] list in
             self?.list = list
             self?.getDataPromise.fulfill()
@@ -103,6 +104,7 @@ final class SearchViewModelTest: XCTestCase {
         list = []
 
         //when
+        UserDefaultsHelper.clearAll()
         searchVM.didGetRecentCityList = { [weak self] list in
             self?.list = list
             self?.getDataPromise.fulfill()

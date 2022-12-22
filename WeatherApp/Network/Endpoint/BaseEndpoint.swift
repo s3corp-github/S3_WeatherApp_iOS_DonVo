@@ -10,20 +10,21 @@ import Foundation
 typealias Parameters = [String : Any]
 
 enum HTTPMethod: String {
-    case GET = "GET"
-    case POST = "POST"
-    case PUT = "PUT"
-    case PATCH = "PATCH"
-    case DELETE = "DELETE"
+    case get = "GET"
+    case post = "POST"
+    case put = "PUT"
+    case patch = "PATCH"
+    case delete = "DELETE"
 }
 
 protocol Endpoint {
     var key: String { get }
     var httpMethods: HTTPMethod { get}
-    var params: Parameters { get }
+    var params: Parameters? { get }
     var baseUrl: String { get }
     var path: String { get }
-    var url: String { get }
+    var headers: [String: Any]? { get }
+    var body: [String: Any]? { get }
 }
 
 extension Endpoint {
@@ -31,24 +32,7 @@ extension Endpoint {
         return  "712fe930090e454885631934222911"
     }
 
-    var baseUrl: String {
-        return "https://api.worldweatheronline.com/"
-    }
-
     var url: String {
-        var urlString = baseUrl + path
-        var isFirstParam = true
-        for (key, value) in params {
-            if isFirstParam == true {
-                urlString.append("?")
-                urlString.append("\(key)=\(value)")
-                isFirstParam = false
-            } else {
-                urlString.append("&")
-                urlString.append("\(key)=\(value)")
-            }
-            urlString.append("")
-        }
-        return urlString
+        return baseUrl + path
     }
 }

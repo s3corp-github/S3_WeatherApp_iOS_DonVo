@@ -49,6 +49,7 @@ final class Network {
 
     //MARK: - request
     func request(with urlString: String, completion: @escaping (Result<Data,APIError>) -> Void) {
+        let session = URLSession.shared
         guard let handleUrl = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
             completion(.failure(.errorURL))
             return
@@ -59,10 +60,6 @@ final class Network {
             return
         }
 
-        let config = URLSessionConfiguration.default
-        config.waitsForConnectivity = true
-
-        let session = URLSession(configuration: config)
         let task = session.dataTask(with: url) { (data, response, error) in
             if let error = error {
                 completion(.failure(.error(error.localizedDescription)))
@@ -78,22 +75,35 @@ final class Network {
     }
 
     func request<T: Decodable>(with endPoint: Endpoint, completion: @escaping (Result<T,APIError>) -> Void) {
-        guard let handleUrl = endPoint.url.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
-            completion(.failure(.errorURL))
-            return
-        }
-
-        guard let url = URL(string: handleUrl) else {
-            completion(.failure(.errorURL))
-            return
-        }
-
-        let config = URLSessionConfiguration.default
-        config.waitsForConnectivity = true
-
-        let session = URLSession(configuration: config)
+        let session = URLSession.shared
         let decoder = JSONDecoder()
-        let task = session.dataTask(with: url) { (data, response, error) in
+
+        guard var components = URLComponents(string: endPoint.url) else {
+            completion(.failure(.errorURL))
+            return
+        }
+
+        // Parameters
+        components.queryItems = endPoint.params?.map { (key, value) in
+            URLQueryItem(name: key, value: "\(value)")
+        }
+
+        // URL
+        guard let url = components.url else {
+            completion(.failure(.errorURL))
+            return
+        }
+        var urlRequest = URLRequest(url: url)
+
+        // HTTP Method
+        urlRequest.httpMethod = endPoint.httpMethods.rawValue
+
+        // HTTP Headers
+        endPoint.headers?.forEach({ header in
+            urlRequest.setValue(header.value as? String, forHTTPHeaderField: header.key)
+        })
+
+        let task = session.dataTask(with: urlRequest) { (data, response, error) in
             if let error = error {
                 completion(.failure(.error(error.localizedDescription)))
                 return

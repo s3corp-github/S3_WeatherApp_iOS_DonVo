@@ -18,7 +18,7 @@ final class CityViewModelTests: XCTestCase {
 
     override func setUpWithError() throws {
         try! super.setUpWithError()
-        cityVM = CityViewModel()
+        cityVM = CityViewModel(service: .init())
     }
 
     override func tearDownWithError() throws {
@@ -43,7 +43,7 @@ final class CityViewModelTests: XCTestCase {
         cityVM.didFailWithError = { _ in
             XCTFail("Got an error")
         }
-        cityVM.getWeatherDetail(with: .init(city: city))
+        cityVM.getWeatherDetail(city: city)
         wait(for: [getDataPromise], timeout: 2)
 
         //then
@@ -63,7 +63,7 @@ final class CityViewModelTests: XCTestCase {
             self?.error = error
             self?.errorPromise.fulfill()
         }
-        cityVM.getWeatherDetail(with: .init(city: city))
+        cityVM.getWeatherDetail(city: city)
         wait(for: [errorPromise], timeout: 2)
 
         //then

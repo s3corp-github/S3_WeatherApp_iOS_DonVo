@@ -13,15 +13,33 @@ enum WeatherEndpoint {
 
 extension WeatherEndpoint: Endpoint {
     var httpMethods: HTTPMethod {
-        return .GET
+        return .get
     }
 
-    var params: Parameters {
+    var params: Parameters? {
         switch self {
         case .getWeather(let city):
             return ["key": key,
                     "format": "json",
                     "q": city]
+        }
+    }
+
+    var baseUrl: String {
+        return "https://api.worldweatheronline.com/"
+    }
+
+    var headers: [String : Any]? {
+        switch self {
+        case .getWeather:
+            return ["Content-Type": "application/json"]
+        }
+    }
+
+    var body: [String : Any]? {
+        switch self {
+        case .getWeather:
+            return [:]
         }
     }
 
