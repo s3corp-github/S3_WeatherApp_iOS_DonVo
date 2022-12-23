@@ -22,6 +22,7 @@ class CityViewController: UIViewController {
     //MARK: - ViewLifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.title = cityName ?? ""
         bind()
         viewModel.getWeatherDetail(city: cityName ?? "")
     }
@@ -33,7 +34,6 @@ class CityViewController: UIViewController {
                 self?.humidityLabel.text = weather.humidity
                 self?.currentWeatherLabel.text = weather.description
                 self?.weatherImg.loadFromUrl(url: weather.iconUrl)
-                self?.navigationItem.title = weather.name
             }
         }
 

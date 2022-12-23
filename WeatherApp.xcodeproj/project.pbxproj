@@ -126,6 +126,7 @@
 			children = (
 				344C012A2935C620001D7917 /* AppDelegate */,
 				344C01292935C2C8001D7917 /* Network */,
+				34A8E12029375D8C001E25BD /* Service */,
 				344C01272935C28A001D7917 /* Model */,
 				344C01262935C275001D7917 /* UI */,
 				344C01282935C295001D7917 /* Utils */,
@@ -157,7 +158,6 @@
 		344C01272935C28A001D7917 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				34ACD97B29541C1B0089947C /* UserDefaults */,
 				34ACD97729541B800089947C /* DataMapping */,
 			);
 			path = Model;
@@ -181,7 +181,6 @@
 			children = (
 				344C012B2935C79B001D7917 /* Network.swift */,
 				349EA7972953112C008BE39C /* Endpoint */,
-				34A8E12029375D8C001E25BD /* Service */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -228,6 +227,7 @@
 		34A8E12029375D8C001E25BD /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				34ACD97B29541C1B0089947C /* UserDefaults */,
 				349EA798295311A8008BE39C /* WeatherService.swift */,
 				349EA79A295311B3008BE39C /* SearchService.swift */,
 			);

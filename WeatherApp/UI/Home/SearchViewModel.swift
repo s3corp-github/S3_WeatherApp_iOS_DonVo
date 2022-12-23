@@ -66,19 +66,11 @@ class SearchViewModel: SearchViewModelProtocol {
     }
 
     func getRecentCity() {
-        let recenCity = UserDefaultsHelper.getData(type: [String].self, forKey: .recentCity) ?? []
+        let recenCity = searchService.getRecentCity()
         didGetRecentCityList?(recenCity)
     }
 
     func updateRecentCity(recent: String) {
-        var recenCity = UserDefaultsHelper.getData(type: [String].self, forKey: .recentCity) ?? []
-        if let index = recenCity.firstIndex(of: recent) {
-            recenCity.remove(at: index)
-        }
-        recenCity.insert(recent, at: 0)
-        if recenCity.count > 10 {
-            recenCity.removeLast()
-        }
-        UserDefaultsHelper.setData(value: recenCity, key: .recentCity)
+        searchService.updateRecentCity(recent: recent)
     }
 }
