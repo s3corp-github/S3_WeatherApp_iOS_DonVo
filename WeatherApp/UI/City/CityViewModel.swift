@@ -8,7 +8,7 @@
 import Foundation
 
 protocol WeatherInformationProtocol {
-    var didGetWeather: ((Weather) -> Void)? { get set }
+    var didGetWeather: ((WeatherDataType) -> Void)? { get set }
     var didFailWithError: ((APIError) -> Void)? { get set }
 
     func getWeatherDetail(city: String)
@@ -17,7 +17,7 @@ protocol WeatherInformationProtocol {
 protocol CityViewModelProtocol: WeatherInformationProtocol {}
 
 class CityViewModel: CityViewModelProtocol {
-    var didGetWeather: ((Weather) -> Void)?
+    var didGetWeather: ((WeatherDataType) -> Void)?
     var didFailWithError: ((APIError) -> Void)?
 
     let weatherService: WeatherService

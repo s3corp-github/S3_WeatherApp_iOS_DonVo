@@ -57,7 +57,8 @@ class SearchViewModel: SearchViewModelProtocol {
         searchService.getCityList(pattern: input) { [weak self] result in
             switch result {
             case .success(let data):
-                self?.didGetCityListFromAPI?(data, input)
+                let cityList = data.getCityListMatchPattern(pattern: input)
+                self?.didGetCityListFromAPI?(cityList, input)
             case .failure(let error):
                 self?.didFailWithError?(error, input)
             }

@@ -19,7 +19,7 @@ enum HTTPMethod: String {
 
 protocol Endpoint {
     var key: String { get }
-    var httpMethods: HTTPMethod { get}
+    var httpMethods: HTTPMethod { get }
     var params: Parameters? { get }
     var baseUrl: String { get }
     var path: String { get }

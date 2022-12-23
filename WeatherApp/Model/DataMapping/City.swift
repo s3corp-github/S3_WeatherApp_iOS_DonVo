@@ -7,23 +7,13 @@
 
 import Foundation
 
-struct CityList: Decodable {
-    let result: [Area]
-    let matchPattern: String
+protocol CityDataType {
+    var cityList: [String] { get }
 
-    var cityList: [String] {
-        var list: [String] = []
-        for val in result {
-            guard let area = val.areaName.first else { continue }
-            let cityName = area.value
-            list.append(cityName)
-        }
-        list = list.getElementMatching(pattern: matchPattern)
-        return list
-    }
+    func getCityListMatchPattern(pattern: String) -> [String]
 }
 
-struct CityData: Decodable {
+struct CityData: Decodable, CityDataType {
     let searchApi: CityResult
 
     enum CodingKeys: String, CodingKey {
@@ -31,14 +21,35 @@ struct CityData: Decodable {
     }
 }
 
-struct CityResult: Decodable {
-    let result: [Area]
+extension CityData {
+    struct CityResult: Decodable {
+        let result: [Area]
+    }
+
+    struct Area: Decodable {
+        let areaName: [AreaName]
+    }
+
+    struct AreaName: Decodable {
+        let value: String
+    }
 }
 
-struct Area: Decodable {
-    let areaName: [AreaName]
-}
+extension CityData {
+    var cityList: [String] {
+        get {
+            var list: [String] = []
+            let result = searchApi.result
+            for val in result {
+                guard let area = val.areaName.first else { continue }
+                let cityName = area.value
+                list.append(cityName)
+            }
+            return list
+        }
+    }
 
-struct AreaName: Decodable {
-    let value: String
+    func getCityListMatchPattern(pattern: String) -> [String] {
+        return cityList.getElementMatching(pattern: pattern)
+    }
 }

@@ -45,7 +45,7 @@ final class SearchViewModelTest: XCTestCase {
         searchVM.didFailWithError = { _, _ in
             XCTFail("Got an error")
         }
-        searchVM.getCityList(with: pattern)
+        searchVM.getData(with: pattern)
         wait(for: [getDataPromise], timeout: 2)
 
         //then
@@ -70,7 +70,7 @@ final class SearchViewModelTest: XCTestCase {
             self?.error = error
             self?.errorPromise.fulfill()
         }
-        searchVM.getCityList(with: pattern)
+        searchVM.getData(with: pattern)
         wait(for: [errorPromise], timeout: 2)
 
         //then
@@ -88,10 +88,53 @@ final class SearchViewModelTest: XCTestCase {
             self?.list = list
             self?.getDataPromise.fulfill()
         }
+        searchVM.previousSearchPattern = " "
         searchVM.updateRecentCity(recent: "Canada")
         searchVM.updateRecentCity(recent: "Singapore")
         searchVM.updateRecentCity(recent: "Ho Chi Minh")
-        searchVM.getRecentCity()
+        searchVM.getData(with: "")
+        wait(for: [getDataPromise], timeout: 1)
+
+        //then
+        XCTAssertEqual(list, ["Ho Chi Minh" ,"Singapore", "Canada"])
+    }
+
+    func testGetCityListInUserDefaultWithEmptyData() throws {
+        //given
+        getDataPromise = expectation(description: "get recent city")
+        list = []
+
+        //when
+        UserDefaultsHelper.clearAll()
+        searchVM.didGetRecentCityList = { [weak self] list in
+            self?.list = list
+            self?.getDataPromise.fulfill()
+        }
+        searchVM.previousSearchPattern = " "
+        searchVM.getData(with: "")
+        wait(for: [getDataPromise], timeout: 1)
+
+        //then
+        XCTAssertEqual(list, [])
+    }
+
+    func testGetCityListInUserDefaultWithDuplicatedItem() throws {
+        //given
+        getDataPromise = expectation(description: "get recent city")
+        list = []
+
+        //when
+        UserDefaultsHelper.clearAll()
+        searchVM.didGetRecentCityList = { [weak self] list in
+            self?.list = list
+            self?.getDataPromise.fulfill()
+        }
+        searchVM.previousSearchPattern = " "
+        searchVM.updateRecentCity(recent: "Canada")
+        searchVM.updateRecentCity(recent: "Canada")
+        searchVM.updateRecentCity(recent: "Singapore")
+        searchVM.updateRecentCity(recent: "Ho Chi Minh")
+        searchVM.getData(with: "")
         wait(for: [getDataPromise], timeout: 1)
 
         //then
@@ -109,6 +152,7 @@ final class SearchViewModelTest: XCTestCase {
             self?.list = list
             self?.getDataPromise.fulfill()
         }
+        searchVM.previousSearchPattern = " "
         searchVM.updateRecentCity(recent: "Osaka")
         searchVM.updateRecentCity(recent: "Seoul")
         searchVM.updateRecentCity(recent: "Tokyo")
@@ -120,7 +164,7 @@ final class SearchViewModelTest: XCTestCase {
         searchVM.updateRecentCity(recent: "Canada")
         searchVM.updateRecentCity(recent: "Singapore")
         searchVM.updateRecentCity(recent: "Ho Chi Minh")
-        searchVM.getRecentCity()
+        searchVM.getData(with: "")
         wait(for: [getDataPromise], timeout: 1)
 
         //then

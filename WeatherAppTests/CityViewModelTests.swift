@@ -11,7 +11,7 @@ import XCTest
 final class CityViewModelTests: XCTestCase {
 
     private var cityVM: CityViewModel!
-    private var weatherResult: Weather!
+    private var weatherResult: WeatherDataType!
     private var error: APIError!
     private var getDataPromise: XCTestExpectation!
     private var errorPromise: XCTestExpectation!

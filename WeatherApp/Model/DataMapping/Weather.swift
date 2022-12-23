@@ -7,39 +7,15 @@
 
 import Foundation
 
-struct Weather {
-    let tempC: String
-    let description: [WeatherDesciption]
-    let weatherIconUrl: [WeatherIcon]
-    let humidity: String
-    let name: String
-
-    var nameString: String {
-        var result = name
-        if let index = name.firstIndex(of: ",") {
-            result = String(result[..<index])
-        }
-        return result
-    }
-
-    var tempCString: String {
-        return tempC
-    }
-
-    var formatedHumiditySring: String {
-        return humidity.appending(" g/m³")
-    }
-
-    var descriptionString: String {
-        return description.first?.value ?? ""
-    }
-
-    var weatherIconUrlString: String {
-        return weatherIconUrl.first?.value ?? ""
-    }
+protocol WeatherDataType {
+    var name: String { get }
+    var tempC: String { get }
+    var humidity: String { get }
+    var description: String { get }
+    var iconUrl: String { get }
 }
 
-struct WeatherData: Decodable {
+struct WeatherData: Decodable, WeatherDataType {
     let condition: [WeatherCondition]
     let area: [WeatherArea]
 
@@ -49,32 +25,58 @@ struct WeatherData: Decodable {
     }
 }
 
-struct WeatherArea: Decodable {
-    let city: String
+extension WeatherData {
+    struct WeatherArea: Decodable {
+        let city: String
 
-    enum CodingKeys: String, CodingKey {
-        case city = "query"
+        enum CodingKeys: String, CodingKey {
+            case city = "query"
+        }
+    }
+
+    struct WeatherCondition: Decodable {
+        let tempC: String
+        let description: [WeatherDesciption]
+        let weatherIconUrl: [WeatherIcon]
+        let humidity: String
+
+        enum CodingKeys: String, CodingKey {
+            case tempC = "temp_C"
+            case description = "weatherDesc"
+            case weatherIconUrl = "weatherIconUrl"
+            case humidity = "humidity"
+        }
+    }
+
+    struct WeatherIcon: Decodable {
+        let value: String
+    }
+
+    struct WeatherDesciption: Decodable {
+        let value: String
     }
 }
 
-struct WeatherCondition: Decodable {
-    let tempC: String
-    let description: [WeatherDesciption]
-    let weatherIconUrl: [WeatherIcon]
-    let humidity: String
-
-    enum CodingKeys: String, CodingKey {
-        case tempC = "temp_C"
-        case description = "weatherDesc"
-        case weatherIconUrl = "weatherIconUrl"
-        case humidity = "humidity"
+extension WeatherData {
+    var name: String {
+        return area.first?.city ?? ""
     }
-}
 
-struct WeatherIcon: Decodable {
-    let value: String
-}
+    var tempC: String {
+        let tempC = condition.first?.tempC ?? ""
+        return tempC.appending("°C")
+    }
 
-struct WeatherDesciption: Decodable {
-    let value: String
+    var humidity: String {
+        let humidity = condition.first?.humidity ?? ""
+        return humidity.appending(" g/m³")
+    }
+
+    var description: String {
+        return condition.first?.description.first?.value ?? ""
+    }
+
+    var iconUrl: String {
+        return condition.first?.weatherIconUrl.first?.value ?? ""
+    }
 }

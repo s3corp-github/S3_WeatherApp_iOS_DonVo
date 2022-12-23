@@ -37,7 +37,6 @@
 		34ACD97D29541C2E0089947C /* UserDefaultsKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34ACD97C29541C2E0089947C /* UserDefaultsKey.swift */; };
 		34BA27AC2950152B00DBFC47 /* String+subscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34BA27AB2950152B00DBFC47 /* String+subscript.swift */; };
 		34BA27AE29501E8000DBFC47 /* UIViewController+keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34BA27AD29501E8000DBFC47 /* UIViewController+keyboard.swift */; };
-		34C8417F293F3554009E732B /* NetworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C8417E293F3554009E732B /* NetworkTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,7 +83,6 @@
 		34ACD97C29541C2E0089947C /* UserDefaultsKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsKey.swift; sourceTree = "<group>"; };
 		34BA27AB2950152B00DBFC47 /* String+subscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+subscript.swift"; sourceTree = "<group>"; };
 		34BA27AD29501E8000DBFC47 /* UIViewController+keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+keyboard.swift"; sourceTree = "<group>"; };
-		34C8417E293F3554009E732B /* NetworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,7 +141,6 @@
 			children = (
 				344C010D2935B4B6001D7917 /* CityViewModelTests.swift */,
 				34A6CF42293A007400E6F5AD /* SearchViewModelTest.swift */,
-				34C8417E293F3554009E732B /* NetworkTests.swift */,
 			);
 			path = WeatherAppTests;
 			sourceTree = "<group>";
@@ -390,7 +387,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				34C8417F293F3554009E732B /* NetworkTests.swift in Sources */,
 				34A6CF43293A007400E6F5AD /* SearchViewModelTest.swift in Sources */,
 				344C010E2935B4B6001D7917 /* CityViewModelTests.swift in Sources */,
 			);

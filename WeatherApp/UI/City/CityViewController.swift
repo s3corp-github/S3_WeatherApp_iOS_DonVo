@@ -29,11 +29,11 @@ class CityViewController: UIViewController {
     private func bind() {
         viewModel.didGetWeather = { [weak self] weather in
             DispatchQueue.main.async {
-                self?.temperatureLabel.text = weather.tempCString
-                self?.humidityLabel.text = weather.formatedHumiditySring
-                self?.currentWeatherLabel.text = weather.descriptionString
-                self?.weatherImg.loadFromUrl(url: weather.weatherIconUrlString)
-                self?.navigationItem.title = weather.nameString
+                self?.temperatureLabel.text = weather.tempC
+                self?.humidityLabel.text = weather.humidity
+                self?.currentWeatherLabel.text = weather.description
+                self?.weatherImg.loadFromUrl(url: weather.iconUrl)
+                self?.navigationItem.title = weather.name
             }
         }
 
