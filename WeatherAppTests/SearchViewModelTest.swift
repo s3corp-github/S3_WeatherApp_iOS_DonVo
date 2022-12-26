@@ -18,7 +18,7 @@ final class SearchViewModelTest: XCTestCase {
 
     override func setUpWithError() throws {
         try! super.setUpWithError()
-        searchVM = SearchViewModel(service: .init())
+        searchVM = SearchViewModel(service: SearchService.init())
         list = []
     }
 

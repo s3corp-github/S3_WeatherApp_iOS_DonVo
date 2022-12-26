@@ -9,12 +9,8 @@ import Foundation
 
 extension Array where Element == String {
     func getElementMatching(pattern: String) -> [String] {
-        var result: [String] = []
-        for val in self {
-            if val.lowercased().contains(pattern.lowercased()) {
-                result.append(val)
-            }
+        return self.filter {
+            $0.lowercased().contains(pattern.lowercased())
         }
-        return result
     }
 }

@@ -29,7 +29,7 @@ protocol SearchViewModelProtocol: CityListProtocol, RecentCityProtocol {
 }
 
 class SearchViewModel: SearchViewModelProtocol {
-    let searchService: SearchService
+    let searchService: SearchServiceProtocol
 
     var cityList: [String] = []
     var previousSearchPattern: String = ""
@@ -37,7 +37,7 @@ class SearchViewModel: SearchViewModelProtocol {
     var didGetRecentCityList: (([String]) -> Void)?
     var didFailWithError: ((APIError, String) -> Void)?
 
-    init(service: SearchService) {
+    init(service: SearchServiceProtocol) {
         self.searchService = service
     }
 

@@ -16,7 +16,7 @@ class ViewController: UIViewController {
     //MARK: - Properties
     private let searchController = UISearchController(searchResultsController: nil)
 
-    private lazy var viewModel: SearchViewModelProtocol = SearchViewModel(service: .init())
+    private lazy var viewModel: SearchViewModelProtocol = SearchViewModel(service: SearchService.init())
     private lazy var emptyLabel: UILabel = {
         let rect = CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(
             width: self.view.bounds.size.width,

@@ -18,7 +18,7 @@ final class CityViewModelTests: XCTestCase {
 
     override func setUpWithError() throws {
         try! super.setUpWithError()
-        cityVM = CityViewModel(service: .init())
+        cityVM = CityViewModel(service: WeatherService.init())
     }
 
     override func tearDownWithError() throws {

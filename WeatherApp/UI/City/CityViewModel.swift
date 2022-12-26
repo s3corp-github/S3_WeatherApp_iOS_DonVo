@@ -20,9 +20,9 @@ class CityViewModel: CityViewModelProtocol {
     var didGetWeather: ((WeatherDataType) -> Void)?
     var didFailWithError: ((APIError) -> Void)?
 
-    let weatherService: WeatherService
+    let weatherService: WeatherServiceProtocol
 
-    init(service: WeatherService) {
+    init(service: WeatherServiceProtocol) {
         self.weatherService = service
     }
 

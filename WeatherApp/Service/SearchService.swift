@@ -7,7 +7,13 @@
 
 import Foundation
 
-class SearchService {
+protocol SearchServiceProtocol {
+    func getCityList(pattern: String, completion: @escaping (Result<CityDataType, APIError>) -> Void)
+    func getRecentCity() -> [String]
+    func updateRecentCity(recent: String)
+}
+
+struct SearchService: SearchServiceProtocol {
     func getCityList(pattern: String, completion: @escaping (Result<CityDataType, APIError>) -> Void ) {
         let getCityListEndpoint = SearchEndpoint.getCityList(pattern: pattern)
         Network.shared().request(with: getCityListEndpoint) { (result: (Result<CityData, APIError>)) in

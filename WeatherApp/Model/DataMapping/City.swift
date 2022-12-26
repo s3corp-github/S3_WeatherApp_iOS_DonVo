@@ -38,14 +38,9 @@ extension CityData {
 extension CityData {
     var cityList: [String] {
         get {
-            var list: [String] = []
-            let result = searchApi.result
-            for val in result {
-                guard let area = val.areaName.first else { continue }
-                let cityName = area.value
-                list.append(cityName)
+            return searchApi.result.compactMap {
+                $0.areaName.first?.value
             }
-            return list
         }
     }
 
