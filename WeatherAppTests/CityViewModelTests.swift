@@ -34,8 +34,6 @@ final class CityViewModelTests: XCTestCase {
         //given
         getDataPromise = expectation(description: "get weather data")
         let city = "Ho Chi Minh"
-
-        //when
         cityVM.didGetWeather = { [weak self] weather in
             self?.weatherResult = weather
             self?.getDataPromise.fulfill()
@@ -43,6 +41,8 @@ final class CityViewModelTests: XCTestCase {
         cityVM.didFailWithError = { _ in
             XCTFail("Got an error")
         }
+
+        //when
         cityVM.getWeatherDetail(city: city)
         wait(for: [getDataPromise], timeout: 2)
 
@@ -52,10 +52,8 @@ final class CityViewModelTests: XCTestCase {
 
     func testGetWeatherDataWithWrongPattern() throws {
         //given
-        errorPromise = expectation(description: "get error not found")
         let city = "asdasd"
-
-        //when
+        errorPromise = expectation(description: "get error not found")
         cityVM.didGetWeather = { _ in
             XCTFail("Expect to found an error but success instead")
         }
@@ -63,6 +61,8 @@ final class CityViewModelTests: XCTestCase {
             self?.error = error
             self?.errorPromise.fulfill()
         }
+
+        //when
         cityVM.getWeatherDetail(city: city)
         wait(for: [errorPromise], timeout: 2)
 

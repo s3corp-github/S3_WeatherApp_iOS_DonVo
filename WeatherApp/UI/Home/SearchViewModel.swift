@@ -8,15 +8,10 @@
 import Foundation
 
 protocol CityListProtocol {
-    var didGetCityListFromAPI: (([String], String) -> Void)? { get set }
-    var didFailWithError: ((APIError, String) -> Void)? { get set }
-
     func getCityList(with input: String)
 }
 
 protocol RecentCityProtocol {
-    var didGetRecentCityList: (([String]) -> Void)? { get set }
-
     func getRecentCity()
     func updateRecentCity(recent: String)
 }
@@ -24,8 +19,10 @@ protocol RecentCityProtocol {
 protocol SearchViewModelProtocol: CityListProtocol, RecentCityProtocol {
     var cityList: [String] { get set }
     var previousSearchPattern: String { get set }
+    var didGetCityList: (([String]) -> Void)? { get set }
+    var didFailWithError: ((Error) -> Void)? { get set }
 
-    func getData(with input: String)
+    func fetchData(with input: String) -> Bool
 }
 
 class SearchViewModel: SearchViewModelProtocol {
@@ -33,17 +30,16 @@ class SearchViewModel: SearchViewModelProtocol {
 
     var cityList: [String] = []
     var previousSearchPattern: String = ""
-    var didGetCityListFromAPI: (([String], String) -> Void)?
-    var didGetRecentCityList: (([String]) -> Void)?
-    var didFailWithError: ((APIError, String) -> Void)?
+    var didGetCityList: (([String]) -> Void)?
+    var didFailWithError: ((Error) -> Void)?
 
     init(service: SearchServiceProtocol) {
         self.searchService = service
     }
 
-    func getData(with input: String) {
+    func fetchData(with input: String) -> Bool {
         let handleInput = input.handleWhiteSpace()
-        guard handleInput != previousSearchPattern else { return }
+        guard handleInput != previousSearchPattern else { return false }
         previousSearchPattern = handleInput
 
         if handleInput == "" {
@@ -51,23 +47,33 @@ class SearchViewModel: SearchViewModelProtocol {
         } else {
             getCityList(with: handleInput)
         }
+        return true
     }
 
     func getCityList(with input: String) {
         searchService.getCityList(pattern: input) { [weak self] result in
+            guard self?.previousSearchPattern == input else { return }
             switch result {
             case .success(let data):
                 let cityList = data.getCityListMatchPattern(pattern: input)
-                self?.didGetCityListFromAPI?(cityList, input)
+                guard !cityList.isEmpty else {
+                    self?.didFailWithError?(SearchCityError.emptyMatchingList)
+                    return
+                }
+                self?.didGetCityList?(cityList)
             case .failure(let error):
-                self?.didFailWithError?(error, input)
+                self?.didFailWithError?(error)
             }
         }
     }
 
     func getRecentCity() {
         let recenCity = searchService.getRecentCity()
-        didGetRecentCityList?(recenCity)
+        guard !recenCity.isEmpty else {
+            didFailWithError?(SearchCityError.emptyRecentList)
+            return
+        }
+        didGetCityList?(recenCity)
     }
 
     func updateRecentCity(recent: String) {

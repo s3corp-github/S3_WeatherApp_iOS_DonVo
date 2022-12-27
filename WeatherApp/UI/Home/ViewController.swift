@@ -7,6 +7,20 @@
 
 import UIKit
 
+enum SearchCityError: Error {
+    case emptyMatchingList
+    case emptyRecentList
+
+    var message: String {
+        switch self {
+        case .emptyMatchingList:
+            return "Unable to find any matching weather location to the query submitted!"
+        case .emptyRecentList:
+            return "You don't have any search history yet!"
+        }
+    }
+}
+
 class ViewController: UIViewController {
 
     //MARK: - IBOutlet
@@ -15,19 +29,15 @@ class ViewController: UIViewController {
 
     //MARK: - Properties
     private let searchController = UISearchController(searchResultsController: nil)
+    private lazy var messageView: MessageView = {
+        return MessageView(frame: tableView.bounds)
+    }()
+
+    private lazy var loadingView: LoadingView = {
+        return LoadingView(frame: tableView.bounds)
+    }()
 
     private lazy var viewModel: SearchViewModelProtocol = SearchViewModel(service: SearchService.init())
-    private lazy var emptyLabel: UILabel = {
-        let rect = CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(
-            width: self.view.bounds.size.width,
-            height: self.view.bounds.size.height))
-        let messageLabel = UILabel(frame: rect)
-        messageLabel.textColor = UIColor.black
-        messageLabel.numberOfLines = 0;
-        messageLabel.textAlignment = .center;
-        messageLabel.sizeToFit()
-        return messageLabel
-    }()
 
     //MARK: - ViewLifeCycle
     override func viewDidLoad() {
@@ -55,44 +65,40 @@ class ViewController: UIViewController {
     }
 
     private func bind() {
-        viewModel.didGetCityListFromAPI = { [weak self] list, pattern in
-            guard self?.viewModel.previousSearchPattern == pattern else { return }
+        viewModel.didGetCityList = { [weak self] list in
+            self?.removeTableViewSubView()
             self?.viewModel.cityList = list
-            if self?.viewModel.cityList.count == 0 {
-                self?.setEmptyMessage(with: "Unable to find any matching weather location to the query submitted!")
-            }
             self?.reloadData()
         }
-        viewModel.didGetRecentCityList = { [weak self] list in
-            self?.viewModel.cityList = list
-            if self?.viewModel.cityList.count == 0 {
-                self?.setEmptyMessage(with: "You don't have any search history yet!")
-            }
-            self?.reloadData()
-        }
-        viewModel.didFailWithError = { [weak self] error, pattern in
-            guard self?.viewModel.previousSearchPattern == pattern else { return }
+        viewModel.didFailWithError = { [weak self] error in
             self?.viewModel.cityList.removeAll()
-            self?.setEmptyMessage(with: error.localizedDescription)
+            if let apiError = error as? APIError {
+                self?.setErrorMessage(apiError.localizedDescription)
+            }
+            if let apiError = error as? SearchCityError {
+                self?.setErrorMessage(apiError.message)
+            }
             self?.reloadData()
         }
     }
 
     //MARK: - Methods
-    private func setEmptyMessage(with message: String) {
-        DispatchQueue.main.async { [weak self] in
-            self?.emptyLabel.text = message
-            self?.tableView.backgroundView = self?.emptyLabel
-        }
-    }
-
-    private func restoreTableView() {
-        tableView.backgroundView = nil
-    }
-
     private func reloadData() {
         DispatchQueue.main.async { [weak self] in
             self?.tableView.reloadData()
+        }
+    }
+
+    private func setErrorMessage(_ message: String) {
+        DispatchQueue.main.async { [weak self] in
+            self?.messageView.setMessage(message)
+            self?.tableView.addOnlySubView(self?.messageView ?? UIView())
+        }
+    }
+
+    private func removeTableViewSubView() {
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.removeAllSubViews()
         }
     }
 
@@ -116,9 +122,6 @@ extension ViewController: UITableViewDelegate {
 //MARK: - UITableViewDataSource
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if viewModel.cityList.count > 0 {
-            restoreTableView()
-        }
         return viewModel.cityList.count
     }
 
@@ -132,10 +135,11 @@ extension ViewController: UITableViewDataSource {
 //MARK: - UISearchBarDelegate
 extension ViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        viewModel.getData(with: searchText)
+        guard viewModel.fetchData(with: searchText) else { return }
+        tableView.addOnlySubView(loadingView)
     }
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        viewModel.getData(with: "")
+        _ = viewModel.fetchData(with: "")
     }
 }
