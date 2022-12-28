@@ -13,8 +13,12 @@ protocol SearchServiceProtocol {
     func updateRecentCity(recent: String)
 }
 
-struct SearchService: SearchServiceProtocol {
-    private let cache = CacheHelper<String, CityDataType>(cost: 50_000_000)
+class SearchService: SearchServiceProtocol {
+    private let cache: CacheHelper<String, CityDataType>
+
+    init(cache: CacheHelper<String, CityDataType> = .init(cost: 50_000_000)) {
+        self.cache = cache
+    }
 
     func getCityList(pattern: String, completion: @escaping (Result<CityDataType, APIError>) -> Void ) {
         if let cached = cache[pattern] {
@@ -23,10 +27,10 @@ struct SearchService: SearchServiceProtocol {
         }
 
         let getCityListEndpoint = SearchEndpoint.getCityList(pattern: pattern)
-        Network.shared().request(with: getCityListEndpoint) { (result: (Result<CityData, APIError>)) in
+        Network.shared().request(with: getCityListEndpoint) { [weak self] (result: (Result<CityData, APIError>)) in
             switch result {
             case .success(let data):
-                cache[pattern] = data
+                self?.cache[pattern] = data
                 completion(.success(data))
             case .failure(let error):
                 completion(.failure(error))

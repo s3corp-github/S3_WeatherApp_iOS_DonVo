@@ -7,6 +7,20 @@
 
 import Foundation
 
+enum SearchCityError: Error {
+    case emptyMatchingList
+    case emptyRecentList
+
+    var message: String {
+        switch self {
+        case .emptyMatchingList:
+            return "Unable to find any matching weather location to the query submitted!"
+        case .emptyRecentList:
+            return "You don't have any search history yet!"
+        }
+    }
+}
+
 protocol CityListProtocol {
     func getCityList(with input: String)
 }
@@ -17,9 +31,9 @@ protocol RecentCityProtocol {
 }
 
 protocol SearchViewModelProtocol: CityListProtocol, RecentCityProtocol {
-    var cityList: [String] { get set }
-    var previousSearchPattern: String { get set }
-    var didGetCityList: (([String]) -> Void)? { get set }
+    var cityList: [String] { get }
+    var previousSearchPattern: String { get }
+    var didGetCityList: (() -> Void)? { get set }
     var didFailWithError: ((Error) -> Void)? { get set }
 
     func fetchData(with input: String) -> Bool
@@ -30,10 +44,10 @@ class SearchViewModel: SearchViewModelProtocol {
 
     var cityList: [String] = []
     var previousSearchPattern: String = ""
-    var didGetCityList: (([String]) -> Void)?
+    var didGetCityList: (() -> Void)?
     var didFailWithError: ((Error) -> Void)?
 
-    init(service: SearchServiceProtocol) {
+    init(service: SearchServiceProtocol = SearchService.init()) {
         self.searchService = service
     }
 
@@ -57,11 +71,14 @@ class SearchViewModel: SearchViewModelProtocol {
             case .success(let data):
                 let cityList = data.getCityListMatchPattern(pattern: input)
                 guard !cityList.isEmpty else {
+                    self?.cityList.removeAll()
                     self?.didFailWithError?(SearchCityError.emptyMatchingList)
                     return
                 }
-                self?.didGetCityList?(cityList)
+                self?.cityList = cityList
+                self?.didGetCityList?()
             case .failure(let error):
+                self?.cityList.removeAll()
                 self?.didFailWithError?(error)
             }
         }
@@ -70,10 +87,12 @@ class SearchViewModel: SearchViewModelProtocol {
     func getRecentCity() {
         let recenCity = searchService.getRecentCity()
         guard !recenCity.isEmpty else {
+            cityList.removeAll()
             didFailWithError?(SearchCityError.emptyRecentList)
             return
         }
-        didGetCityList?(recenCity)
+        cityList = recenCity
+        didGetCityList?()
     }
 
     func updateRecentCity(recent: String) {

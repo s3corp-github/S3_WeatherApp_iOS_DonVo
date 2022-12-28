@@ -7,20 +7,6 @@
 
 import UIKit
 
-enum SearchCityError: Error {
-    case emptyMatchingList
-    case emptyRecentList
-
-    var message: String {
-        switch self {
-        case .emptyMatchingList:
-            return "Unable to find any matching weather location to the query submitted!"
-        case .emptyRecentList:
-            return "You don't have any search history yet!"
-        }
-    }
-}
-
 class ViewController: UIViewController {
 
     //MARK: - IBOutlet
@@ -30,14 +16,14 @@ class ViewController: UIViewController {
     //MARK: - Properties
     private let searchController = UISearchController(searchResultsController: nil)
     private lazy var messageView: MessageView = {
-        return MessageView(frame: tableView.bounds)
+        return MessageView(frame: tableView.frame)
     }()
 
     private lazy var loadingView: LoadingView = {
-        return LoadingView(frame: tableView.bounds)
+        return LoadingView(frame: tableView.frame)
     }()
 
-    private lazy var viewModel: SearchViewModelProtocol = SearchViewModel(service: SearchService.init())
+    private lazy var viewModel: SearchViewModelProtocol = SearchViewModel()
 
     //MARK: - ViewLifeCycle
     override func viewDidLoad() {
@@ -65,13 +51,12 @@ class ViewController: UIViewController {
     }
 
     private func bind() {
-        viewModel.didGetCityList = { [weak self] list in
+        viewModel.didGetCityList = { [weak self] in
             self?.removeTableViewSubView()
-            self?.viewModel.cityList = list
             self?.reloadData()
         }
+
         viewModel.didFailWithError = { [weak self] error in
-            self?.viewModel.cityList.removeAll()
             if let apiError = error as? APIError {
                 self?.setErrorMessage(apiError.localizedDescription)
             }

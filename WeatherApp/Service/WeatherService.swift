@@ -11,7 +11,7 @@ protocol WeatherServiceProtocol {
     func getWeather(city: String, completion: @escaping (Result<WeatherDataType, APIError>) -> Void)
 }
 
-struct WeatherService: WeatherServiceProtocol {
+class WeatherService: WeatherServiceProtocol {
     func getWeather(city: String, completion: @escaping (Result<WeatherDataType, APIError>) -> Void ) {
         let getWeatherEndpoint = WeatherEndpoint.getWeather(city: city)
         Network.shared().request(with: getWeatherEndpoint) { (result: (Result<BaseResponse<WeatherData>, APIError>)) in

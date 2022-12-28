@@ -11,7 +11,6 @@ import XCTest
 final class SearchViewModelTest: XCTestCase {
 
     private var searchVM: SearchViewModel!
-    private var list: [String]!
     private var error: Error!
     private var getDataPromise: XCTestExpectation!
     private var errorPromise: XCTestExpectation!
@@ -19,12 +18,10 @@ final class SearchViewModelTest: XCTestCase {
     override func setUpWithError() throws {
         try! super.setUpWithError()
         searchVM = SearchViewModel(service: SearchService.init())
-        list = []
     }
 
     override func tearDownWithError() throws {
         searchVM = nil
-        list = nil
         error = nil
         getDataPromise = nil
         errorPromise = nil
@@ -36,8 +33,7 @@ final class SearchViewModelTest: XCTestCase {
         let pattern = "Lon"
         var wrongCount = 0
         getDataPromise = expectation(description: "get city data")
-        searchVM.didGetCityList = { [weak self] list in
-            self?.list = list
+        searchVM.didGetCityList = { [weak self] in
             self?.getDataPromise.fulfill()
         }
         searchVM.didFailWithError = { _ in
@@ -47,13 +43,13 @@ final class SearchViewModelTest: XCTestCase {
         //when
         _ = searchVM.fetchData(with: pattern)
         wait(for: [getDataPromise], timeout: 2)
-
-        //then
-        for val in list {
+        for val in searchVM.cityList {
             if !val.lowercased().contains(pattern.lowercased()) {
                 wrongCount += 1
             }
         }
+
+        //then
         XCTAssertEqual(wrongCount, 0)
     }
 
@@ -61,7 +57,7 @@ final class SearchViewModelTest: XCTestCase {
         //given
         let pattern = "Lon Don"
         searchVM.previousSearchPattern = "Lon Don"
-        searchVM.didGetCityList = { _ in
+        searchVM.didGetCityList = {
             XCTFail("Got data")
         }
         searchVM.didFailWithError = { _ in
@@ -78,9 +74,9 @@ final class SearchViewModelTest: XCTestCase {
     func testGetCityListDataWithWrongPattern() throws {
         //given
         var errorMessage = ""
-        errorPromise = expectation(description: "get error not found")
         let pattern = "asdasd"
-        searchVM.didGetCityList = { _ in
+        errorPromise = expectation(description: "get error not found")
+        searchVM.didGetCityList = {
             XCTFail("Expect to found an error but success instead")
         }
         searchVM.didFailWithError = { [weak self] error in
@@ -91,13 +87,13 @@ final class SearchViewModelTest: XCTestCase {
         //when
         _ = searchVM.fetchData(with: pattern)
         wait(for: [errorPromise], timeout: 2)
-
-        //then
         guard let apiError = error as? APIError else {
             XCTFail("Wrong Error type")
             return
         }
         errorMessage = apiError.localizedDescription
+
+        //then
         XCTAssertEqual(errorMessage, "Unable to find any matching weather location to the query submitted!")
     }
 
@@ -106,7 +102,7 @@ final class SearchViewModelTest: XCTestCase {
         var errorMessage = ""
         let pattern = "Roz"
         errorPromise = expectation(description: "get error not found")
-        searchVM.didGetCityList = { _ in
+        searchVM.didGetCityList = {
             XCTFail("Expect to found an error but success instead")
         }
         searchVM.didFailWithError = { [weak self] error in
@@ -117,22 +113,20 @@ final class SearchViewModelTest: XCTestCase {
         //when
         _ = searchVM.fetchData(with: pattern)
         wait(for: [errorPromise], timeout: 2)
-
-        //then
         guard let apiError = error as? SearchCityError else {
             XCTFail("Wrong Error type")
             return
         }
         errorMessage = apiError.message
+
+        //then
         XCTAssertEqual(errorMessage, "Unable to find any matching weather location to the query submitted!")
     }
 
     func testGetCityListInUserDefault() throws {
         //given
         getDataPromise = expectation(description: "get recent city")
-        list = []
-        searchVM.didGetCityList = { [weak self] list in
-            self?.list = list
+        searchVM.didGetCityList = { [weak self] in
             self?.getDataPromise.fulfill()
         }
 
@@ -146,13 +140,12 @@ final class SearchViewModelTest: XCTestCase {
         wait(for: [getDataPromise], timeout: 1)
 
         //then
-        XCTAssertEqual(list, ["Ho Chi Minh" ,"Singapore", "Canada"])
+        XCTAssertEqual(searchVM.cityList, ["Ho Chi Minh" ,"Singapore", "Canada"])
     }
 
     func testGetCityListInUserDefaultWithEmptyData() throws {
         //given
         errorPromise = expectation(description: "get error empty recent list")
-        list = []
         searchVM.didFailWithError = { [weak self] error in
             self?.error = error
             self?.errorPromise.fulfill()
@@ -163,21 +156,19 @@ final class SearchViewModelTest: XCTestCase {
         searchVM.previousSearchPattern = "a"
         _ = searchVM.fetchData(with: "")
         wait(for: [errorPromise], timeout: 1)
-
-        //then
         guard let apiError = error as? SearchCityError else {
             XCTFail("Wrong Error type")
             return
         }
+
+        //then
         XCTAssertEqual(apiError, SearchCityError.emptyRecentList)
     }
 
     func testGetCityListInUserDefaultWithDuplicatedItem() throws {
         //given
         getDataPromise = expectation(description: "get recent city")
-        list = []
-        searchVM.didGetCityList = { [weak self] list in
-            self?.list = list
+        searchVM.didGetCityList = { [weak self] in
             self?.getDataPromise.fulfill()
         }
 
@@ -192,15 +183,13 @@ final class SearchViewModelTest: XCTestCase {
         wait(for: [getDataPromise], timeout: 1)
 
         //then
-        XCTAssertEqual(list, ["Ho Chi Minh" ,"Singapore", "Canada"])
+        XCTAssertEqual(searchVM.cityList, ["Ho Chi Minh" ,"Singapore", "Canada"])
     }
 
     func testGetCityListInUserDefaultWithMoreThanTenItems() throws {
         //given
         getDataPromise = expectation(description: "get recent city with ten more items")
-        list = []
-        searchVM.didGetCityList = { [weak self] list in
-            self?.list = list
+        searchVM.didGetCityList = { [weak self]  in
             self?.getDataPromise.fulfill()
         }
 
@@ -222,6 +211,6 @@ final class SearchViewModelTest: XCTestCase {
         wait(for: [getDataPromise], timeout: 1)
 
         //then
-        XCTAssertEqual(list, ["Ho Chi Minh" ,"Singapore", "Canada", "Paris", "Hanoi", "Bangkok", "New York", "Texas", "Tokyo", "Seoul"])
+        XCTAssertEqual(searchVM.cityList, ["Ho Chi Minh" ,"Singapore", "Canada", "Paris", "Hanoi", "Bangkok", "New York", "Texas", "Tokyo", "Seoul"])
     }
 }
