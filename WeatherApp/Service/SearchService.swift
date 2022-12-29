@@ -14,7 +14,7 @@ protocol SearchServiceProtocol {
 }
 
 class SearchService: SearchServiceProtocol {
-    private let cache: CacheHelper<String, CityDataType>
+    let cache: CacheHelper<String, CityDataType>
 
     init(cache: CacheHelper<String, CityDataType> = .init(cost: 50_000_000)) {
         self.cache = cache

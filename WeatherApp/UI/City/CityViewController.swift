@@ -17,7 +17,7 @@ class CityViewController: UIViewController {
 
     //MARK: - Properties
     var cityName: String?
-    private lazy var viewModel: CityViewModelProtocol = CityViewModel(service: WeatherService.init())
+    private lazy var viewModel: CityViewModelProtocol = CityViewModel()
 
     //MARK: - ViewLifeCycle
     override func viewDidLoad() {

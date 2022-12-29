@@ -22,7 +22,7 @@ class CityViewModel: CityViewModelProtocol {
 
     let weatherService: WeatherServiceProtocol
 
-    init(service: WeatherServiceProtocol) {
+    init(service: WeatherServiceProtocol = WeatherService.init()) {
         self.weatherService = service
     }
 
