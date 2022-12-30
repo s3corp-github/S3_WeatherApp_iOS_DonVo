@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="xRK-8B-s0g">
-                                <rect key="frame" x="0.0" y="91" width="375" height="687"/>
+                                <rect key="frame" x="0.0" y="91" width="375" height="721"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="Cell" id="ASa-9i-ntk">
@@ -38,7 +38,7 @@
                             <constraint firstItem="xRK-8B-s0g" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="2Dz-hc-Vfz"/>
                             <constraint firstItem="xRK-8B-s0g" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Bap-HR-Lud"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="xRK-8B-s0g" secondAttribute="trailing" id="ZfV-xN-NUe"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="xRK-8B-s0g" secondAttribute="bottom" id="nxA-2w-gOT"/>
+                            <constraint firstAttribute="bottom" secondItem="xRK-8B-s0g" secondAttribute="bottom" id="nxA-2w-gOT"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="39e-mv-KEK"/>
