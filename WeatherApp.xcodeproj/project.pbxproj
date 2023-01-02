@@ -42,6 +42,7 @@
 		34ACD97A29541BFC0089947C /* UserDefaultsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34ACD97929541BFC0089947C /* UserDefaultsHelper.swift */; };
 		34ACD97D29541C2E0089947C /* UserDefaultsKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34ACD97C29541C2E0089947C /* UserDefaultsKey.swift */; };
 		34BA27AE29501E8000DBFC47 /* UIViewController+keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34BA27AD29501E8000DBFC47 /* UIViewController+keyboard.swift */; };
+		83E40B252963040900640523 /* NetworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E40B242963040900640523 /* NetworkTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +94,7 @@
 		34ACD97929541BFC0089947C /* UserDefaultsHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsHelper.swift; sourceTree = "<group>"; };
 		34ACD97C29541C2E0089947C /* UserDefaultsKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsKey.swift; sourceTree = "<group>"; };
 		34BA27AD29501E8000DBFC47 /* UIViewController+keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+keyboard.swift"; sourceTree = "<group>"; };
+		83E40B242963040900640523 /* NetworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,6 +155,7 @@
 				344C010D2935B4B6001D7917 /* CityViewModelTests.swift */,
 				34A6CF42293A007400E6F5AD /* SearchViewModelTests.swift */,
 				34A97A12295D707900A30A1E /* SearchServiceTests.swift */,
+				83E40B242963040900640523 /* NetworkTests.swift */,
 			);
 			path = WeatherAppTests;
 			sourceTree = "<group>";
@@ -424,6 +427,7 @@
 			files = (
 				34A97A13295D707900A30A1E /* SearchServiceTests.swift in Sources */,
 				34A6CF43293A007400E6F5AD /* SearchViewModelTests.swift in Sources */,
+				83E40B252963040900640523 /* NetworkTests.swift in Sources */,
 				344C010E2935B4B6001D7917 /* CityViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

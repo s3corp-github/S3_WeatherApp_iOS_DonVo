@@ -8,10 +8,10 @@
 import XCTest
 @testable import WeatherApp
 
-class SearchServiceTests: XCTestCase {
+final class SearchServiceTests: XCTestCase {
 
     private var error: Error!
-    var service: SearchService!
+    private var service: SearchService!
     private var getDataPromise: XCTestExpectation!
     private var errorPromise: XCTestExpectation!
 
