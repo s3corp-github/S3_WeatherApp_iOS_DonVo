@@ -2,20 +2,20 @@
 
 A Weather application tracking temperature by city Name. User can search for available cities and track temperature, humidity, condition, weather image.
 
-- [Guideline](#guidelines)
-- [Use Cases](#usecases)
-  * [Use case 1](#usecase1)
-  * [Use case 2](#usecase2)
-  * [Use case 3](#usecase3)
-  * [Use case 4](#usecase4)
-  * [Use case 5](#usecase5)
+- [Guideline](#guideline)
+- [Use Cases](#use-cases)
+  * [Use case 1](#use-case1)
+  * [Use case 2](#use-case2)
+  * [Use case 3](#use-case3)
+  * [Use case 4](#use-case4)
+  * [Use case 5](#use-case5)
 - [Interface](#interface)
-  * [Search Screen](#searchscreen)
-  * [City Screen](#cityscreen)
-- [Test Coverage](#testcoverage)
-  * [Test Result](#testresult)
+  * [Search Screen](#search-screen)
+  * [City Screen](#city-screen)
+- [Test Coverage](#test-coverage)
+  * [Test Result](#test-result)
   * [Coverage](#coverage)
-- [Tools and Technologies](#toolsandtechnologies)
+- [Tools and Technologies](#tools-and-technologies)
 - [References](#references)
 
 ## Guideline
