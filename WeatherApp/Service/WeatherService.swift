@@ -12,9 +12,15 @@ protocol WeatherServiceProtocol {
 }
 
 class WeatherService: WeatherServiceProtocol {
+    let network: Network
+
+    init(network: Network = .shared()) {
+        self.network = network
+    }
+
     func getWeather(city: String, completion: @escaping (Result<WeatherDataType, APIError>) -> Void ) {
         let getWeatherEndpoint = WeatherEndpoint.getWeather(city: city)
-        Network.shared().request(with: getWeatherEndpoint) { (result: (Result<BaseResponse<WeatherData>, APIError>)) in
+        network.request(with: getWeatherEndpoint) { (result: (Result<BaseResponse<WeatherData>, APIError>)) in
             switch result {
             case .success(let decodedData):
                 let weatherData = decodedData.data

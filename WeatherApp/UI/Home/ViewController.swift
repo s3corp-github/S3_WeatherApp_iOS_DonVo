@@ -33,6 +33,7 @@ class ViewController: UIViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         if viewModel.previousSearchPattern == "" {
             viewModel.getRecentCity()
         }
@@ -120,11 +121,13 @@ extension ViewController: UITableViewDataSource {
 //MARK: - UISearchBarDelegate
 extension ViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        guard viewModel.fetchData(with: searchText) else { return }
+        guard viewModel.willFetchData(with: searchText) else { return }
+        viewModel.fetchData(with: searchText)
         tableView.addOnlySubView(loadingView)
     }
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        _ = viewModel.fetchData(with: "")
+        guard viewModel.willFetchData(with: "") else { return }
+        viewModel.fetchData(with: "")
     }
 }

@@ -36,7 +36,8 @@ protocol SearchViewModelProtocol: CityListProtocol, RecentCityProtocol {
     var didGetCityList: (() -> Void)? { get set }
     var didFailWithError: ((Error) -> Void)? { get set }
 
-    func fetchData(with input: String) -> Bool
+    func willFetchData(with input: String) -> Bool
+    func fetchData(with input: String)
 }
 
 class SearchViewModel: SearchViewModelProtocol {
@@ -51,9 +52,12 @@ class SearchViewModel: SearchViewModelProtocol {
         self.searchService = service
     }
 
-    func fetchData(with input: String) -> Bool {
+    func willFetchData(with input: String) -> Bool {
+        return input.handleWhiteSpace() != previousSearchPattern
+    }
+
+    func fetchData(with input: String) {
         let handleInput = input.handleWhiteSpace()
-        guard handleInput != previousSearchPattern else { return false }
         previousSearchPattern = handleInput
 
         if handleInput == "" {
@@ -61,7 +65,6 @@ class SearchViewModel: SearchViewModelProtocol {
         } else {
             getCityList(with: handleInput)
         }
-        return true
     }
 
     func getCityList(with input: String) {

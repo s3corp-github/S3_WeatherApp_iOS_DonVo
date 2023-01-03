@@ -10,38 +10,21 @@ import XCTest
 
 final class SearchViewModelTests: XCTestCase {
 
-    private var error: Error!
-    private var viewModel: SearchViewModel!
-    private var getDataPromise: XCTestExpectation!
-    private var errorPromise: XCTestExpectation!
-
-    override func setUpWithError() throws {
-        try! super.setUpWithError()
-        viewModel = SearchViewModel()
-    }
-
-    override func tearDownWithError() throws {
-        viewModel = nil
-        error = nil
-        getDataPromise = nil
-        errorPromise = nil
-        try! super.tearDownWithError()
-    }
-
     //MARK: - CityListProtocol
     func test_whenSearchServiceRetrievesCityListOfPattern_thenViewModelContainsCityListMatchPattern() throws {
         //given
+        let viewModel = SearchViewModel()
         let pattern = "Lon"
-        getDataPromise = expectation(description: "get city list of pattern")
-        viewModel.didGetCityList = { [weak self] in
-            self?.getDataPromise.fulfill()
+        let getDataPromise = expectation(description: "get city list of pattern")
+        viewModel.didGetCityList = {
+            getDataPromise.fulfill()
         }
         viewModel.didFailWithError = { _ in
             XCTFail("Got an error")
         }
 
         //when
-        _ = viewModel.fetchData(with: pattern)
+        viewModel.fetchData(with: pattern)
         wait(for: [getDataPromise], timeout: 3)
         let wrongCount = viewModel.cityList.filter { city in
             !city.lowercased().contains(pattern.lowercased())
@@ -53,65 +36,60 @@ final class SearchViewModelTests: XCTestCase {
 
     func test_whenSearchServiceReturnsErrorNotFoundMatching_thenViewModelContainsError() throws {
         //given
+        let viewModel = SearchViewModel()
         let pattern = "asdasd"
-        errorPromise = expectation(description: "get error not found")
+        let errorPromise = expectation(description: "get error not found")
         viewModel.didGetCityList = {
             XCTFail("Expect to found an error but success instead")
         }
-        viewModel.didFailWithError = { [weak self] error in
-            self?.error = error
-            self?.errorPromise.fulfill()
+        viewModel.didFailWithError = {  error in
+            guard let apiError = error as? APIError else {
+                XCTFail("Wrong Error type")
+                return
+            }
+            XCTAssertEqual(apiError, .error("Unable to find any matching weather location to the query submitted!"))
+            errorPromise.fulfill()
         }
 
         //when
-        _ = viewModel.fetchData(with: pattern)
-        wait(for: [errorPromise], timeout: 3)
-        guard let apiError = error as? APIError else {
-            XCTFail("Wrong Error type")
-            return
-        }
+        viewModel.fetchData(with: pattern)
 
         //then
-        XCTAssertEqual(apiError, .error("Unable to find any matching weather location to the query submitted!"))
+        wait(for: [errorPromise], timeout: 3)
     }
 
     func test_whenSearchServiceRetrievesCityListOfPattern_thenViewModelContainsErrorNotFoundMatching() throws {
         //given
+        let viewModel = SearchViewModel()
         let pattern = "Roz"
-        errorPromise = expectation(description: "get error not found")
+        let errorPromise = expectation(description: "get error not found")
         viewModel.didGetCityList = {
             XCTFail("Expect to found an error but get data instead")
         }
-        viewModel.didFailWithError = { [weak self] error in
-            self?.error = error
-            self?.errorPromise.fulfill()
+        viewModel.didFailWithError = { error in
+            guard let apiError = error as? SearchCityError else {
+                XCTFail("Wrong Error type")
+                return
+            }
+            XCTAssertEqual(apiError.message, SearchCityError.emptyMatchingList.message)
+            errorPromise.fulfill()
         }
 
         //when
-        _ = viewModel.fetchData(with: pattern)
-        wait(for: [errorPromise], timeout: 2)
-        guard let apiError = error as? SearchCityError else {
-            XCTFail("Wrong Error type")
-            return
-        }
+        viewModel.fetchData(with: pattern)
 
         //then
-        XCTAssertEqual(apiError.message, SearchCityError.emptyMatchingList.message)
+        wait(for: [errorPromise], timeout: 2)
     }
 
-    func test_whenPatternMatchPreviousPatern_thenViewModelReturns() throws {
+    func test_whenPatternMatchPreviousPattern_thenViewModelReturns() throws {
         //given
+        let viewModel = SearchViewModel()
         let pattern = "Lon Don"
         viewModel.previousSearchPattern = "Lon Don"
-        viewModel.didGetCityList = {
-            XCTFail("Got data")
-        }
-        viewModel.didFailWithError = { _ in
-            XCTFail("Got an error")
-        }
 
         //when
-        let isFetched = viewModel.fetchData(with: pattern)
+        let isFetched = viewModel.willFetchData(with: pattern)
 
         //then
         XCTAssertEqual(isFetched, false)
@@ -120,9 +98,10 @@ final class SearchViewModelTests: XCTestCase {
     //MARK: - RecentCityProtocol
     func test_whenSearchServiceRetrievesSavedRecentCities_thenViewModelContainsRecentCities() throws {
         //given
-        getDataPromise = expectation(description: "get recent city")
-        viewModel.didGetCityList = { [weak self] in
-            self?.getDataPromise.fulfill()
+        let viewModel = SearchViewModel()
+        let getDataPromise = expectation(description: "get recent city")
+        viewModel.didGetCityList = {
+            getDataPromise.fulfill()
         }
         viewModel.didFailWithError = { _ in
             XCTFail("Got an error")
@@ -134,7 +113,7 @@ final class SearchViewModelTests: XCTestCase {
         viewModel.updateRecentCity(recent: "Canada")
         viewModel.updateRecentCity(recent: "Singapore")
         viewModel.updateRecentCity(recent: "Ho Chi Minh")
-        _ = viewModel.fetchData(with: "")
+        viewModel.fetchData(with: "")
         wait(for: [getDataPromise], timeout: 3)
 
         //then
@@ -143,26 +122,26 @@ final class SearchViewModelTests: XCTestCase {
 
     func test_whenSearchServiceRetrievesEmptyRecentCities_thenViewModelContainsErrorEmpty() throws {
         //given
-        errorPromise = expectation(description: "get error empty recent list")
+        let viewModel = SearchViewModel()
+        let errorPromise = expectation(description: "get error empty recent list")
         viewModel.didGetCityList = {
             XCTFail("Expect to found an error but get data instead")
         }
-        viewModel.didFailWithError = { [weak self] error in
-            self?.error = error
-            self?.errorPromise.fulfill()
+        viewModel.didFailWithError = { error in
+            guard let apiError = error as? SearchCityError else {
+                XCTFail("Wrong Error type")
+                return
+            }
+            XCTAssertEqual(apiError.message, SearchCityError.emptyRecentList.message)
+            errorPromise.fulfill()
         }
 
         //when
         UserDefaultsHelper.clearAll()
         viewModel.previousSearchPattern = " "
-        _ = viewModel.fetchData(with: "")
-        wait(for: [errorPromise], timeout: 3)
-        guard let apiError = error as? SearchCityError else {
-            XCTFail("Wrong Error type")
-            return
-        }
+        viewModel.fetchData(with: "")
 
         //then
-        XCTAssertEqual(apiError.message, SearchCityError.emptyRecentList.message)
+        wait(for: [errorPromise], timeout: 3)
     }
 }

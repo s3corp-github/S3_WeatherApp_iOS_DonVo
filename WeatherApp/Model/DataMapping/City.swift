@@ -13,6 +13,12 @@ protocol CityDataType {
     func getCityListMatchPattern(pattern: String) -> [String]
 }
 
+extension CityDataType {
+    func getCityListMatchPattern(pattern: String) -> [String] {
+        return cityList.getElementMatching(pattern: pattern)
+    }
+}
+
 struct CityData: Decodable, CityDataType {
     let searchApi: CityResult
 
@@ -42,9 +48,5 @@ extension CityData {
                 $0.areaName.first?.value
             }
         }
-    }
-
-    func getCityListMatchPattern(pattern: String) -> [String] {
-        return cityList.getElementMatching(pattern: pattern)
     }
 }

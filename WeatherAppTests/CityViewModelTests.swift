@@ -10,33 +10,20 @@ import XCTest
 
 final class CityViewModelTests: XCTestCase {
 
-    private var error: APIError!
-    private var viewModel: CityViewModel!
-    private var weatherResult: WeatherDataType!
-    private var getDataPromise: XCTestExpectation!
-    private var errorPromise: XCTestExpectation!
-
-    override func setUpWithError() throws {
-        try! super.setUpWithError()
-        viewModel = CityViewModel()
-    }
-
-    override func tearDownWithError() throws {
-        error = nil
-        viewModel = nil
-        weatherResult = nil
-        getDataPromise = nil
-        errorPromise = nil
-        try! super.tearDownWithError()
-    }
-
     func test_whenWeatherServiceRetrievesWeatherDataOfCity_thenViewModelContainsDataOfThatCity() throws {
         //given
+        let viewModel = CityViewModel()
         let city = "Ho Chi Minh"
-        getDataPromise = expectation(description: "get weather data with pattern")
-        viewModel.didGetWeather = { [weak self] weather in
-            self?.weatherResult = weather
-            self?.getDataPromise.fulfill()
+        let getDataPromise = expectation(description: "get weather data with pattern")
+        viewModel.didGetWeather = { weather in
+            XCTAssertTrue(weather.name.lowercased().contains(city.lowercased()))
+            XCTAssertNotEqual(weather.description, "")
+            XCTAssertNotEqual(weather.humidity, "")
+            XCTAssertTrue(weather.humidity.contains(" g/m³"))
+            XCTAssertNotEqual(weather.iconUrl, "")
+            XCTAssertNotEqual(weather.tempC, "")
+            XCTAssertTrue(weather.tempC.contains("°C"))
+            getDataPromise.fulfill()
         }
         viewModel.didFailWithError = { _ in
             XCTFail("Got an error")
@@ -44,29 +31,28 @@ final class CityViewModelTests: XCTestCase {
 
         //when
         viewModel.getWeatherDetail(city: city)
-        wait(for: [getDataPromise], timeout: 3)
 
         //then
-        XCTAssertTrue(weatherResult.name.lowercased().contains(city.lowercased()))
+        wait(for: [getDataPromise], timeout: 3)
     }
 
     func test_whenWeatherServiceReturnsError_thenViewModelContainsError() throws {
         //given
+        let viewModel = CityViewModel()
         let city = "asdasd"
-        errorPromise = expectation(description: "contains error")
+        let errorPromise = expectation(description: "contains error")
         viewModel.didGetWeather = { _ in
             XCTFail("expect to contain error but retrieve data instead")
         }
-        viewModel.didFailWithError = { [weak self] error in
-            self?.error = error
-            self?.errorPromise.fulfill()
+        viewModel.didFailWithError = { error in
+            XCTAssertEqual(error, .error("Unable to find any matching weather location to the query submitted!"))
+            errorPromise.fulfill()
         }
 
         //when
         viewModel.getWeatherDetail(city: city)
-        wait(for: [errorPromise], timeout: 3)
 
         //then
-        XCTAssertEqual(error, .error("Unable to find any matching weather location to the query submitted!"))
+        wait(for: [errorPromise], timeout: 3)
     }
 }

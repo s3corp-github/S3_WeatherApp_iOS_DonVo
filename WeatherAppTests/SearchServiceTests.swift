@@ -10,26 +10,13 @@ import XCTest
 
 final class SearchServiceTests: XCTestCase {
 
-    private var error: Error!
-    private var service: SearchService!
-    private var getDataPromise: XCTestExpectation!
-    private var errorPromise: XCTestExpectation!
-
-    override func setUpWithError() throws {
-        try! super.setUpWithError()
-        service = SearchService()
-    }
-
-    override func tearDownWithError() throws {
-        service = nil
-        error = nil
-        getDataPromise = nil
-        errorPromise = nil
-        try! super.tearDownWithError()
+    struct CityDataMock: CityDataType {
+        var cityList: [String]
     }
 
     func test_whenUserDefaultsRetrievesSavedRecentCities_thenContainsDistinctRecentCitiesItem() throws {
         //given
+        let service = SearchService()
         var list: [String] = []
 
         //when
@@ -46,6 +33,7 @@ final class SearchServiceTests: XCTestCase {
 
     func test_whenUserDefaultsRetrievesSavedRecentCities_thenContainsRecentCitiesWithMaximumTenItems() throws {
         //given
+        let service = SearchService()
         var list: [String] = []
 
         //when
@@ -69,60 +57,48 @@ final class SearchServiceTests: XCTestCase {
 
     func test_whenSuccessfullyGetCityListOfPattern_thenDataIsSavedInCache() {
         // given
+        let service = SearchService()
         let pattern = "London"
-        var list: [String] = []
-        getDataPromise = XCTestExpectation(description: "get city list")
+        let getDataPromise = XCTestExpectation(description: "get city list")
 
         //when
-        service.getCityList(pattern: pattern) { [weak self]  result in
+        service.getCityList(pattern: pattern) { result in
             switch result {
             case .success(let data):
-                list = data.cityList
-                self?.getDataPromise.fulfill()
+                XCTAssertEqual(data.cityList, service.cache[pattern]?.cityList)
+                getDataPromise.fulfill()
             case.failure(_):
                 XCTFail("Get an error")
             }
         }
-        wait(for: [getDataPromise], timeout: 3)
 
         //then
-        XCTAssertEqual(list, service.cache[pattern]?.cityList)
+        wait(for: [getDataPromise], timeout: 3)
     }
 
     func test_whenRetrievesCityListAlreadyCached_thenContainsCityList() {
         // given
-        let group = DispatchGroup()
+        let service = SearchService()
         let pattern = "London"
-        var list: [String] = []
-        var cachedList: [String] = []
-        getDataPromise = XCTestExpectation(description: "get city list")
-        getDataPromise.expectedFulfillmentCount = 2
+        let cachedList: [String] = ["London", "LondonSecond", "LondonThird"]
+        let mock = CityDataMock(cityList: cachedList)
+        let getDataPromise = XCTestExpectation(description: "get city list")
 
         //when
-        group.enter()
-        service.getCityList(pattern: pattern) { [weak self] result in
-            group.leave()
+        service.cache[pattern] = nil
+        service.cache[pattern] = mock
+
+        service.getCityList(pattern: pattern) { result in
             switch result {
             case .success(let data):
-                list = data.cityList
-                self?.getDataPromise.fulfill()
+                XCTAssertEqual(data.cityList, cachedList)
+                getDataPromise.fulfill()
             case.failure(_):
                 XCTFail("Get an error")
             }
         }
-        group.wait()
-        service.getCityList(pattern: pattern) { [weak self] result in
-            switch result {
-            case .success(let data):
-                cachedList = data.cityList
-                self?.getDataPromise.fulfill()
-            case.failure(_):
-                XCTFail("Get an error")
-            }
-        }
-        wait(for: [getDataPromise], timeout: 4)
 
         //then
-        XCTAssertEqual(list, cachedList)
+        wait(for: [getDataPromise], timeout: 2)
     }
 }
