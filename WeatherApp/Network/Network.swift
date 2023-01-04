@@ -11,6 +11,7 @@ enum APIError: Error, Equatable {
     case error(String)
     case errorRequestWithCode(Int, String)
     case errorURL
+    case errorMalformedURL
     case errorDataNotExist
     case errorDecodedData
     case errorUnknown
@@ -23,6 +24,8 @@ enum APIError: Error, Equatable {
             return "Error \(code): \(message)"
         case .errorURL:
             return "URL String is error."
+        case .errorMalformedURL:
+            return "URL String is malformed."
         case .errorDataNotExist:
             return "Data is not exist."
         case .errorDecodedData:
@@ -50,12 +53,8 @@ final class Network {
     //MARK: - request
     func request(with urlString: String, completion: @escaping (Result<Data,APIError>) -> Void) {
         let session = URLSession.shared
-        guard let handleUrl = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
-            completion(.failure(.errorURL))
-            return
-        }
 
-        guard let url = URL(string: handleUrl) else {
+        guard let url = URL(string: urlString) else {
             completion(.failure(.errorURL))
             return
         }
@@ -78,10 +77,13 @@ final class Network {
         let session = URLSession.shared
         let decoder = JSONDecoder()
 
-        guard var components = URLComponents(string: endPoint.url) else {
-            completion(.failure(.errorURL))
+        guard var components = URLComponents(string: endPoint.baseUrl) else {
+            completion(.failure(.errorMalformedURL))
             return
         }
+
+        //path
+        components.path = endPoint.path
 
         // Parameters
         components.queryItems = endPoint.params?.map { (key, value) in

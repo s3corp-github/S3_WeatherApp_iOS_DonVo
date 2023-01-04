@@ -31,8 +31,4 @@ extension Endpoint {
     var key: String {
         return  "979d1424bf8f4f57bef72412222812"
     }
-
-    var url: String {
-        return baseUrl + path
-    }
 }

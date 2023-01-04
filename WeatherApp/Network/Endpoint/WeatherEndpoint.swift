@@ -44,6 +44,6 @@ extension WeatherEndpoint: Endpoint {
     }
 
     var path: String {
-        return "premium/v1/weather.ashx"
+        return "/premium/v1/weather.ashx"
     }
 }

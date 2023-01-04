@@ -47,6 +47,6 @@ extension SearchEndpoint: Endpoint {
     }
 
     var path: String {
-        return "premium/v1/search.ashx"
+        return "/premium/v1/search.ashx"
     }
 }
