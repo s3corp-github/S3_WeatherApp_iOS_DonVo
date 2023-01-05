@@ -39,6 +39,8 @@
 		34A8E12229375F08001E25BD /* SearchEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A8E12129375F08001E25BD /* SearchEndpoint.swift */; };
 		34A97A13295D707900A30A1E /* SearchServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A97A12295D707900A30A1E /* SearchServiceTests.swift */; };
 		34AA88A0293DD25D00865A98 /* String+handleWhiteSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AA889F293DD25D00865A98 /* String+handleWhiteSpace.swift */; };
+		34AAD0242966B64F00E56BE9 /* NetworkTests+UrlSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AAD0232966B64F00E56BE9 /* NetworkTests+UrlSession.swift */; };
+		34AAD0262966B69B00E56BE9 /* NetworkTests+dataTranfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AAD0252966B69B00E56BE9 /* NetworkTests+dataTranfer.swift */; };
 		34ACD97A29541BFC0089947C /* UserDefaultsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34ACD97929541BFC0089947C /* UserDefaultsHelper.swift */; };
 		34ACD97D29541C2E0089947C /* UserDefaultsKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34ACD97C29541C2E0089947C /* UserDefaultsKey.swift */; };
 		34BA27AE29501E8000DBFC47 /* UIViewController+keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34BA27AD29501E8000DBFC47 /* UIViewController+keyboard.swift */; };
@@ -91,6 +93,8 @@
 		34A8E12129375F08001E25BD /* SearchEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchEndpoint.swift; sourceTree = "<group>"; };
 		34A97A12295D707900A30A1E /* SearchServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchServiceTests.swift; sourceTree = "<group>"; };
 		34AA889F293DD25D00865A98 /* String+handleWhiteSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+handleWhiteSpace.swift"; sourceTree = "<group>"; };
+		34AAD0232966B64F00E56BE9 /* NetworkTests+UrlSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkTests+UrlSession.swift"; sourceTree = "<group>"; };
+		34AAD0252966B69B00E56BE9 /* NetworkTests+dataTranfer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkTests+dataTranfer.swift"; sourceTree = "<group>"; };
 		34ACD97929541BFC0089947C /* UserDefaultsHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsHelper.swift; sourceTree = "<group>"; };
 		34ACD97C29541C2E0089947C /* UserDefaultsKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsKey.swift; sourceTree = "<group>"; };
 		34BA27AD29501E8000DBFC47 /* UIViewController+keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+keyboard.swift"; sourceTree = "<group>"; };
@@ -152,6 +156,7 @@
 		344C010C2935B4B6001D7917 /* WeatherAppTests */ = {
 			isa = PBXGroup;
 			children = (
+				34AAD0222966B5E300E56BE9 /* Mock */,
 				344C010D2935B4B6001D7917 /* CityViewModelTests.swift */,
 				34A6CF42293A007400E6F5AD /* SearchViewModelTests.swift */,
 				34A97A12295D707900A30A1E /* SearchServiceTests.swift */,
@@ -266,6 +271,15 @@
 				349EA79A295311B3008BE39C /* SearchService.swift */,
 			);
 			path = Service;
+			sourceTree = "<group>";
+		};
+		34AAD0222966B5E300E56BE9 /* Mock */ = {
+			isa = PBXGroup;
+			children = (
+				34AAD0232966B64F00E56BE9 /* NetworkTests+UrlSession.swift */,
+				34AAD0252966B69B00E56BE9 /* NetworkTests+dataTranfer.swift */,
+			);
+			path = Mock;
 			sourceTree = "<group>";
 		};
 		34ACD97729541B800089947C /* DataMapping */ = {
@@ -427,6 +441,8 @@
 			files = (
 				34A97A13295D707900A30A1E /* SearchServiceTests.swift in Sources */,
 				34A6CF43293A007400E6F5AD /* SearchViewModelTests.swift in Sources */,
+				34AAD0242966B64F00E56BE9 /* NetworkTests+UrlSession.swift in Sources */,
+				34AAD0262966B69B00E56BE9 /* NetworkTests+dataTranfer.swift in Sources */,
 				83E40B252963040900640523 /* NetworkTests.swift in Sources */,
 				344C010E2935B4B6001D7917 /* CityViewModelTests.swift in Sources */,
 			);

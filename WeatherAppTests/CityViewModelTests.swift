@@ -16,13 +16,16 @@ final class CityViewModelTests: XCTestCase {
         let city = "Ho Chi Minh"
         let getDataPromise = expectation(description: "get weather data with pattern")
         viewModel.didGetWeather = { weather in
-            XCTAssertTrue(weather.name.lowercased().contains(city.lowercased()))
+            let name = weather.name ?? ""
+            let humidity = weather.humidity ?? ""
+            let tempC = weather.tempC ?? ""
+            XCTAssertTrue(name.lowercased().contains(city.lowercased()))
             XCTAssertNotEqual(weather.description, "")
             XCTAssertNotEqual(weather.humidity, "")
-            XCTAssertTrue(weather.humidity.contains(" g/m³"))
+            XCTAssertTrue(humidity.contains(" g/m³"))
             XCTAssertNotEqual(weather.iconUrl, "")
             XCTAssertNotEqual(weather.tempC, "")
-            XCTAssertTrue(weather.tempC.contains("°C"))
+            XCTAssertTrue(tempC.contains("°C"))
             getDataPromise.fulfill()
         }
         viewModel.didFailWithError = { _ in

@@ -10,20 +10,6 @@ import XCTest
 
 final class NetworkTests: XCTestCase {
 
-    struct EndointMock: Endpoint {
-        var httpMethods: WeatherApp.HTTPMethod
-        var params: WeatherApp.Parameters? = [:]
-        var baseUrl: String = "https://httpstat.us"
-        var path: String
-        var headers: [String : Any]? = ["Accept": "application/json"]
-        var body: [String : Any]? = [:]
-    }
-
-    struct responseMock: Decodable {
-        var code: Int
-        var description: String
-    }
-
     func test_whenMockDataPassed_thenReturnProperData() {
         // given
         let promise = XCTestExpectation(description: "Get data")
@@ -118,7 +104,7 @@ final class NetworkTests: XCTestCase {
         Network.shared().request(with: mock) { (result: (Result<responseMock, APIError>)) in
             switch result {
             case .success(_):
-                XCTFail("Should return server error")
+                XCTFail("Should return unknown error")
             case .failure(let error):
                 XCTAssertEqual(error, .errorUnknown)
                 promise.fulfill()
@@ -131,14 +117,14 @@ final class NetworkTests: XCTestCase {
 
     func test_whenMockDataUnsupportedBaseUrlPassed_thenReturnError() {
         // given
-        let promise = XCTestExpectation(description: "Get error")
+        let promise = XCTestExpectation(description: "Get unsupported url error")
         let mock = EndointMock(httpMethods: .get, baseUrl: "123" , path: "/404")
 
         // when
         Network.shared().request(with: mock) { (result: (Result<responseMock, APIError>)) in
             switch result {
             case .success(_):
-                XCTFail("Should return client error")
+                XCTFail("Should return unsuported error")
             case .failure(let error):
                 XCTAssertEqual(error, .error("unsupported URL"))
                 promise.fulfill()
@@ -158,7 +144,7 @@ final class NetworkTests: XCTestCase {
         Network.shared().request(with: mock) { (result: (Result<responseMock, APIError>)) in
             switch result {
             case .success(_):
-                XCTFail("Should return client error")
+                XCTFail("Should return malformed error")
             case .failure(let error):
                 XCTAssertEqual(error, .errorMalformedURL)
                 promise.fulfill()
@@ -178,9 +164,52 @@ final class NetworkTests: XCTestCase {
         Network.shared().request(with: mock) { (result: (Result<responseMock, APIError>)) in
             switch result {
             case .success(_):
-                XCTFail("Should return client error")
+                XCTFail("Should return url error")
             case .failure(let error):
                 XCTAssertEqual(error, .errorURL)
+                promise.fulfill()
+            }
+        }
+
+        //then
+        wait(for: [promise], timeout: 2)
+    }
+
+    func test_whenMockNilResponsePassed_thenReturnErrorCanNotGetResponse() {
+        // given
+        let promise = XCTestExpectation(description: "Get response error")
+        let mock = EndointMock(httpMethods: .get, path: "/200")
+        let session = SessionMock(data: Data(), response: nil)
+
+        // when
+        Network.shared().request(with: mock, session: session) { (result: (Result<responseMock, APIError>)) in
+            switch result {
+            case .success(_):
+                XCTFail("Should return response error")
+            case .failure(let error):
+                XCTAssertEqual(error, .error("Can not get http response"))
+                promise.fulfill()
+            }
+        }
+
+        //then
+        wait(for: [promise], timeout: 2)
+    }
+
+    func test_whenMockNilDataPassed_thenReturnErrorDataNotExist() {
+        // given
+        let promise = XCTestExpectation(description: "Get data error")
+        let mock = EndointMock(httpMethods: .get, path: "/200")
+        let mockResponse = HTTPURLResponse()
+        let session = SessionMock(data: nil, response: mockResponse)
+
+        // when
+        Network.shared().request(with: mock, session: session) { (result: (Result<responseMock, APIError>)) in
+            switch result {
+            case .success(_):
+                XCTFail("Should return data not exist error")
+            case .failure(let error):
+                XCTAssertEqual(error, .errorDataNotExist)
                 promise.fulfill()
             }
         }
@@ -247,6 +276,27 @@ final class NetworkTests: XCTestCase {
         wait(for: [promise], timeout: 2)
     }
 
+    func test_whenUrlStringAndNilDataPassed_thenReturnErrorDataNotExist() {
+        // given
+        let promise = XCTestExpectation(description: "Get error")
+        let urlString = "https://httpstat.us/200"
+        let sessionMock = SessionMock()
+
+        // when
+        Network.shared().request(with: urlString, session: sessionMock) { result in
+            switch result {
+            case .success(_):
+                XCTFail("should return error")
+            case .failure(let error):
+                XCTAssertEqual(error, .errorDataNotExist)
+                promise.fulfill()
+            }
+        }
+
+        //then
+        wait(for: [promise], timeout: 2)
+    }
+
     func test_whenAPIErrorUsed_thenReturnCorrectErrorDescription() {
         //given
         let error = APIError.error("Example Error")
@@ -256,6 +306,7 @@ final class NetworkTests: XCTestCase {
         let errorDataNotExist = APIError.errorDataNotExist
         let errorDecodedData = APIError.errorDecodedData
         let errorRequestWithCode = APIError.errorRequestWithCode(404, "Not Found")
+        let errorRequestWithCodeAndNilDescription = APIError.errorRequestWithCode(404, nil)
 
         //when
         //then
@@ -266,5 +317,6 @@ final class NetworkTests: XCTestCase {
         XCTAssertEqual(errorDataNotExist.localizedDescription, "Data is not exist.")
         XCTAssertEqual(errorDecodedData.localizedDescription, "Can not decode data.")
         XCTAssertEqual(errorRequestWithCode.localizedDescription, "Error 404: Not Found")
+        XCTAssertEqual(errorRequestWithCodeAndNilDescription.localizedDescription, "Error 404: ")
     }
 }

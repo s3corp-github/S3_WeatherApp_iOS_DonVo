@@ -46,10 +46,42 @@
             filePath = "WeatherApp/Network/Network.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "76"
-            endingLineNumber = "76"
-            landmarkName = "request(with:completion:)"
+            startingLineNumber = "75"
+            endingLineNumber = "75"
+            landmarkName = "request(with:session:completion:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "FF974E65-330B-4CEF-9BD0-11E5383A7676 - f88c2bc0cf0f729d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "default argument 1 of WeatherApp.Network.request&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Swift.Decodable&gt;(with: WeatherApp.Endpoint, session: __C.NSURLSession, completion: (Swift.Result&lt;&#x3c4;_0_0, WeatherApp.APIError&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "WeatherApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/don.vo/Desktop/iOS/WeatherApp/WeatherApp/Network/Network.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "76"
+                  endingLineNumber = "76"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  uuid = "FF974E65-330B-4CEF-9BD0-11E5383A7676 - 6f4060e794b58f3d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "WeatherApp.Network.request&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Swift.Decodable&gt;(with: WeatherApp.Endpoint, session: __C.NSURLSession, completion: (Swift.Result&lt;&#x3c4;_0_0, WeatherApp.APIError&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "WeatherApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/don.vo/Desktop/iOS/WeatherApp/WeatherApp/Network/Network.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "76"
+                  endingLineNumber = "76"
+                  offsetFromSymbolStart = "744">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -62,9 +94,9 @@
             filePath = "WeatherApp/Network/Network.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "63"
-            endingLineNumber = "63"
-            landmarkName = "request(with:completion:)"
+            startingLineNumber = "62"
+            endingLineNumber = "62"
+            landmarkName = "request(with:session:completion:)"
             landmarkType = "7">
             <Locations>
                <Location
@@ -110,9 +142,9 @@
             filePath = "WeatherApp/Network/Network.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "130"
-            endingLineNumber = "130"
-            landmarkName = "request(with:completion:)"
+            startingLineNumber = "128"
+            endingLineNumber = "128"
+            landmarkName = "request(with:session:completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -126,9 +158,9 @@
             filePath = "WeatherApp/Network/Network.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "141"
-            endingLineNumber = "141"
-            landmarkName = "request(with:completion:)"
+            startingLineNumber = "139"
+            endingLineNumber = "139"
+            landmarkName = "request(with:session:completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -424,9 +456,9 @@
             filePath = "WeatherApp/Network/Network.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "131"
-            endingLineNumber = "131"
-            landmarkName = "request(with:completion:)"
+            startingLineNumber = "129"
+            endingLineNumber = "129"
+            landmarkName = "request(with:session:completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -440,8 +472,8 @@
             filePath = "WeatherAppTests/NetworkTests.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "118"
-            endingLineNumber = "118"
+            startingLineNumber = "104"
+            endingLineNumber = "104"
             landmarkName = "test_whenStatusCodeAbove599_thenReturnUnknownError()"
             landmarkType = "7">
             <Locations>
@@ -505,7 +537,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "54"
             endingLineNumber = "54"
-            landmarkName = "request(with:completion:)"
+            landmarkName = "request(with:session:completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -519,39 +551,39 @@
             filePath = "WeatherApp/Network/Network.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "109"
-            endingLineNumber = "109"
-            landmarkName = "request(with:completion:)"
+            startingLineNumber = "107"
+            endingLineNumber = "107"
+            landmarkName = "request(with:session:completion:)"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "CC0DC8FE-C97C-49B0-BFA6-D32D88BCCAB3 - 3e0468486a3605c7"
+                  uuid = "CC0DC8FE-C97C-49B0-BFA6-D32D88BCCAB3 - 92a0d83672514ffa"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #3 @Sendable (Swift.Optional&lt;Foundation.Data&gt;, Swift.Optional&lt;__C.NSURLResponse&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in WeatherApp.Network.request&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Swift.Decodable&gt;(with: WeatherApp.Endpoint, completion: (Swift.Result&lt;&#x3c4;_0_0, WeatherApp.APIError&gt;) -&gt; ()) -&gt; ()"
+                  symbolName = "closure #3 @Sendable (Swift.Optional&lt;Foundation.Data&gt;, Swift.Optional&lt;__C.NSURLResponse&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in WeatherApp.Network.request&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Swift.Decodable&gt;(with: WeatherApp.Endpoint, session: __C.NSURLSession, completion: (Swift.Result&lt;&#x3c4;_0_0, WeatherApp.APIError&gt;) -&gt; ()) -&gt; ()"
                   moduleName = "WeatherApp"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/don.vo/Desktop/iOS/WeatherApp/WeatherApp/Network/Network.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "109"
-                  endingLineNumber = "109"
+                  startingLineNumber = "108"
+                  endingLineNumber = "108"
                   offsetFromSymbolStart = "388">
                </Location>
                <Location
-                  uuid = "CC0DC8FE-C97C-49B0-BFA6-D32D88BCCAB3 - 3e0468486a3605c7"
+                  uuid = "CC0DC8FE-C97C-49B0-BFA6-D32D88BCCAB3 - 92a0d83672514ffa"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #3 @Sendable (Swift.Optional&lt;Foundation.Data&gt;, Swift.Optional&lt;__C.NSURLResponse&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in WeatherApp.Network.request&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Swift.Decodable&gt;(with: WeatherApp.Endpoint, completion: (Swift.Result&lt;&#x3c4;_0_0, WeatherApp.APIError&gt;) -&gt; ()) -&gt; ()"
+                  symbolName = "closure #3 @Sendable (Swift.Optional&lt;Foundation.Data&gt;, Swift.Optional&lt;__C.NSURLResponse&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in WeatherApp.Network.request&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Swift.Decodable&gt;(with: WeatherApp.Endpoint, session: __C.NSURLSession, completion: (Swift.Result&lt;&#x3c4;_0_0, WeatherApp.APIError&gt;) -&gt; ()) -&gt; ()"
                   moduleName = "WeatherApp"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/don.vo/Desktop/iOS/WeatherApp/WeatherApp/Network/Network.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "109"
-                  endingLineNumber = "109"
+                  startingLineNumber = "108"
+                  endingLineNumber = "108"
                   offsetFromSymbolStart = "468">
                </Location>
             </Locations>

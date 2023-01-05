@@ -9,7 +9,7 @@ import Foundation
 
 enum APIError: Error, Equatable {
     case error(String)
-    case errorRequestWithCode(Int, String)
+    case errorRequestWithCode(Int, String?)
     case errorURL
     case errorMalformedURL
     case errorDataNotExist
@@ -21,7 +21,7 @@ enum APIError: Error, Equatable {
         case .error(let string):
             return string
         case .errorRequestWithCode(let code, let message):
-            return "Error \(code): \(message)"
+            return "Error \(code): \(message ?? "")"
         case .errorURL:
             return "URL String is error."
         case .errorMalformedURL:
@@ -51,8 +51,7 @@ final class Network {
     private init() {}
 
     //MARK: - request
-    func request(with urlString: String, completion: @escaping (Result<Data,APIError>) -> Void) {
-        let session = URLSession.shared
+    func request(with urlString: String, session: URLSession = .shared, completion: @escaping (Result<Data,APIError>) -> Void) {
 
         guard let url = URL(string: urlString) else {
             completion(.failure(.errorURL))
@@ -73,8 +72,7 @@ final class Network {
         task.resume()
     }
 
-    func request<T: Decodable>(with endPoint: Endpoint, completion: @escaping (Result<T,APIError>) -> Void) {
-        let session = URLSession.shared
+    func request<T: Decodable>(with endPoint: Endpoint, session: URLSession = .shared , completion: @escaping (Result<T,APIError>) -> Void) {
         let decoder = JSONDecoder()
 
         guard var components = URLComponents(string: endPoint.baseUrl) else {
@@ -121,16 +119,16 @@ final class Network {
                 return
             }
 
-            var errorMessage = ""
+            var errorMessage: String?
             if let error = try? decoder.decode(BaseResponse<ErrorResponse>.self, from: data) {
-                errorMessage = error.data.error.first?.message ?? ""
+                errorMessage = error.data.error.first?.message
             }
 
             let statusCode = httpResponse.statusCode
             switch statusCode {
             case 200:
-                if errorMessage != "" {
-                    completion(.failure(.error(errorMessage)))
+                if let message = errorMessage {
+                    completion(.failure(.error(message)))
                     return
                 }
 

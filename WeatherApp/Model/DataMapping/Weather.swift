@@ -8,11 +8,11 @@
 import Foundation
 
 protocol WeatherDataType {
-    var name: String { get }
-    var tempC: String { get }
-    var humidity: String { get }
-    var description: String { get }
-    var iconUrl: String { get }
+    var name: String? { get }
+    var tempC: String? { get }
+    var humidity: String? { get }
+    var description: String? { get }
+    var iconUrl: String? { get }
 }
 
 struct WeatherData: Decodable, WeatherDataType {
@@ -58,25 +58,25 @@ extension WeatherData {
 }
 
 extension WeatherData {
-    var name: String {
-        return area.first?.city ?? ""
+    var name: String? {
+        return area.first?.city
     }
 
-    var tempC: String {
-        let tempC = condition.first?.tempC ?? ""
-        return tempC.appending("°C")
+    var tempC: String? {
+        let tempC = condition.first?.tempC
+        return tempC?.appending("°C")
     }
 
-    var humidity: String {
-        let humidity = condition.first?.humidity ?? ""
-        return humidity.appending(" g/m³")
+    var humidity: String? {
+        let humidity = condition.first?.humidity
+        return humidity?.appending(" g/m³")
     }
 
-    var description: String {
-        return condition.first?.description.first?.value ?? ""
+    var description: String? {
+        return condition.first?.description.first?.value
     }
 
-    var iconUrl: String {
-        return condition.first?.weatherIconUrl.first?.value ?? ""
+    var iconUrl: String? {
+        return condition.first?.weatherIconUrl.first?.value
     }
 }
