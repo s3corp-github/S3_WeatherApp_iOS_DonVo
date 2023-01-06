@@ -60,16 +60,27 @@ A Weather application tracking temperature by city Name. User can search for ava
 ## Interface
 ### Search Screen
 <p align="center">
- <img src="https://user-images.githubusercontent.com/43954674/210293886-6d04d388-c7bd-404e-8edc-f6e2a47f06f7.png" width="300">
- <img src="https://user-images.githubusercontent.com/43954674/210293871-41b76a12-73bd-473c-8ff2-e7397008042f.png" width="300">
- <img src="https://user-images.githubusercontent.com/43954674/210293909-3d01fb8e-47cf-4cbd-9e31-3195a0ec6c8b.png" width="300">
- <img src="https://user-images.githubusercontent.com/43954674/210293924-9189b3aa-3070-4d8d-8fa1-708e7655b746.png" width="300">
- <img src="https://user-images.githubusercontent.com/43954674/210293894-ab21ba7b-e3ab-4e62-8bec-f2b573ce6a3a.png" width="300">
+ <img src="https://user-images.githubusercontent.com/43954674/210293886-6d04d388-c7bd-404e-8edc-f6e2a47f06f7.png" width="200">
+ <img src="https://user-images.githubusercontent.com/43954674/210293871-41b76a12-73bd-473c-8ff2-e7397008042f.png" width="200">
+ <img src="https://user-images.githubusercontent.com/43954674/210293909-3d01fb8e-47cf-4cbd-9e31-3195a0ec6c8b.png" width="200">
+ <img src="https://user-images.githubusercontent.com/43954674/210293924-9189b3aa-3070-4d8d-8fa1-708e7655b746.png" width="200">
+ <img src="https://user-images.githubusercontent.com/43954674/210293894-ab21ba7b-e3ab-4e62-8bec-f2b573ce6a3a.png" width="200">
 </p>
 
 ### City Screen
 <p align="center">
- <img src="https://user-images.githubusercontent.com/43954674/210294120-5f9635db-0bfe-4579-9f39-a8ec4a29f3b3.png" width="300">
+ <img src="https://user-images.githubusercontent.com/43954674/210294120-5f9635db-0bfe-4579-9f39-a8ec4a29f3b3.png" width="200">
+</p>
+
+## Test Coverage
+### Test Result
+<p align="center">
+ <img src="https://user-images.githubusercontent.com/43954674/210918166-984319b7-7cc1-46c1-8f58-d31c8b79c5e2.png" width="600">
+</p>
+
+### Coverage
+<p align="center">
+ <img src="https://user-images.githubusercontent.com/43954674/210918189-6142decd-53f1-44f8-886a-58f817115ad2.png" width="600">
 </p>
 
 ## Tools and Technologies
