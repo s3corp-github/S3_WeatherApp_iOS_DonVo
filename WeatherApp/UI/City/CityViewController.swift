@@ -28,6 +28,7 @@ class CityViewController: UIViewController {
     }
 
     private func bind() {
+        Print("111")
         viewModel.didGetWeather = { [weak self] weather in
             DispatchQueue.main.async {
                 self?.temperatureLabel.text = weather.tempC ?? ""
