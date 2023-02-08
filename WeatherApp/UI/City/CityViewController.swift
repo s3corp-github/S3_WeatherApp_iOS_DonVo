@@ -40,6 +40,7 @@ extension CityViewController: CityViewModelDelegate {
     }
 
     func didFailWithError(_ model: CityViewModel, error: APIError) {
+        print("789")
         DispatchQueue.main.async {
             self.showErrorAlert(message: error.localizedDescription, title: "Back") {
                 self.navigationController?.popViewController(animated: true)
