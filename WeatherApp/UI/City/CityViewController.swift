@@ -26,6 +26,7 @@ class CityViewController: UIViewController {
         bind()
         viewModel.getWeatherDetail(city: cityName ?? "")
         print("123")
+        print("456")
     }
 
     private func bind() {
