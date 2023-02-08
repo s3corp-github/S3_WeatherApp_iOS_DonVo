@@ -25,6 +25,7 @@ class CityViewController: UIViewController {
         navigationItem.title = cityName ?? ""
         bind()
         viewModel.getWeatherDetail(city: cityName ?? "")
+        print("123")
     }
 
     private func bind() {
